@@ -1,0 +1,25 @@
+
+> react-ssr-jest@1.0.0 start D:\projects\github\react-ssr-jest
+> node server
+
+http://localhost:3000
+Client compiled <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{title}}</title>
+<script type="text/javascript" src="/manifest.5122ed9751891c830a53.js"></script><script type="text/javascript" src="/app.5122ed9751891c830a53.js"></script></head>
+<body>
+<div id="app"></div>
+</body>
+</html>
+
+i ｢wdm｣: Hash: [1m5122ed9751891c830a53[39m[22m
+Version: webpack [1m4.12.0[39m[22m
+Time: [1m625[39m[22mms
+Built at: 2018-06-11 [1m17:45:34[39m[22m
+                           [1mAsset[39m[22m       [1mSize[39m[22m    [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m       [1mChunk Names[39m[22m
+     [1m[33mapp.5122ed9751891c830a53.js[39m[22m   [1m[33m1.72 MiB[39m[22m       [1mapp[39m[22m  [1m[32m[emitted][39m[22m  [1m[33m[big][39m[22m  app
+[1m[32mmanifest.5122ed9751891c830a53.js[39m[22m   6.04 KiB  [1mmanifest[39m[22m  [1m[32m[emitted][39m[22m         manifest
+                      [1m[32mindex.html[39m[22m  285 bytes          [1m[39m[22m  [1m[32m[emitted][39m[22m         
+i ｢wdm｣: Compiled successfully.
+Terminate batch job (Y/N)? 
