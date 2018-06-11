@@ -11,28 +11,39 @@ const config = require('./webpack.config.js');
 const ReactDOMServer = require('react-dom/server')
 const {createApp} = require('./src/entry-server')
 const readFile = (output, file) => output.readFileSync(path.join(config.output.path, file), 'utf-8')
+const ejs = require('ejs');
 
-const clientCompiler = webpack(config);
-clientCompiler.outputFileSystem = new MFS()
-const devMiddleware = require('webpack-dev-middleware')(clientCompiler, {
-    publicPath: config.output.publicPath,
-    stats: {
-        colors: true,
-        modules: false,
-        children: false,
-        entrypoints: false,
-    },
-    watchOptions: {
-        aggregateTimeout: 300,
-        poll: 1000
-    }
-})
-// console.log(createApp())
-app.use(devMiddleware);
-clientCompiler.hooks.done.tap("Client compiled", function (compilation, callback) {
-    // const HTML = readFile(clientCompiler.outputFileSystem, 'index.html');
-    // console.log('bbbbb', HTML)
-    // console.log("Client compiled", ReactDOMServer.renderToStaticMarkup(App))
+app.set('views', path.join(__dirname, './views'));
+app.set('view engine', 'html');
+app.engine('html', ejs.renderFile);
+
+// const clientCompiler = webpack(config);
+// clientCompiler.outputFileSystem = new MFS()
+// const devMiddleware = require('webpack-dev-middleware')(clientCompiler, {
+//     publicPath: config.output.publicPath,
+//     stats: {
+//         colors: true,
+//         modules: false,
+//         children: false,
+//         entrypoints: false,
+//     },
+//     watchOptions: {
+//         aggregateTimeout: 300,
+//         poll: 1000
+//     }
+// })
+// // console.log(createApp())
+// app.use(devMiddleware);
+// clientCompiler.hooks.done.tap("Client compiled", function (compilation, callback) {
+//     // const HTML = readFile(clientCompiler.outputFileSystem, 'index.html');
+//     // console.log('bbbbb', HTML)
+//     console.log("Client compiled", ReactDOMServer.renderToStaticMarkup(App))
+// });
+
+app.get('*', (req, res, next) => {
+    createApp({req, res}).then(context => res.render('index', context))
+    // createApp()
+    // next()
 });
 
 // clientCompiler.hooks.tap("afterEmit",function (compilation, callback) {

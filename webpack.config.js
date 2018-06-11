@@ -96,11 +96,11 @@ const config = {
             filename: "[name].[hash].css",
             chunkFilename: "[name].[hash].css"
         }),
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            filename: 'index.template.html',
-            inject: 'body'
-        })
+        // new HtmlWebpackPlugin({
+        //     template: './src/index.html',
+        //     filename: 'index.html',
+        //     inject: 'body'
+        // })
     ]
 }
 
