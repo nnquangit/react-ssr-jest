@@ -12,6 +12,7 @@ const ReactDOMServer = require('react-dom/server')
 const {createApp} = require('./src/entry-server')
 const readFile = (output, file) => output.readFileSync(path.join(config.output.path, file), 'utf-8')
 const ejs = require('ejs');
+const assets = require('./public/assets.json');
 
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'html');
@@ -40,11 +41,10 @@ app.engine('html', ejs.renderFile);
 //     console.log("Client compiled", ReactDOMServer.renderToStaticMarkup(App))
 // });
 
-app.get('*', (req, res, next) => {
+app.get('*', (req, res) => {
+    console.log(assets)
     createApp({req, res}).then(context => res.render('index', context))
-    // createApp()
-    // next()
-});
+})
 
 // clientCompiler.hooks.tap("afterEmit",function (compilation, callback) {
 //     console.log("hookshookshooks ", Object.keys(compilation), compilation)

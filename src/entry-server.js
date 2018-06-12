@@ -3,9 +3,9 @@ import {renderToString} from 'react-dom/server';
 import {StaticRouter} from "react-router-dom";
 import {App} from './App';
 import {Helmet} from "react-helmet";
+import 'bootstrap/dist/css/bootstrap.css';
 
 export function createApp({req, res}) {
-    console.log(req.url)
     return new Promise((resolve, reject) => {
         const html = renderToString(
             <div>

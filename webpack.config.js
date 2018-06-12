@@ -9,12 +9,15 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const AssetsPlugin = require('assets-webpack-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
 
 const config = {
-    entry: {app: './src/entry-client.js'},
+    entry: {
+        app: './src/entry-client.js'
+    },
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : '#cheap-module-eval-source-map',
     performance: {
@@ -23,6 +26,27 @@ const config = {
         maxAssetSize: 500 * 1024,
     },
     optimization: {
+        splitChunks: {
+            chunks: "async",
+            minSize: 1000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            name: true,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial",
+                    priority: -10
+                },
+                default: {
+                    minChunks: 1,
+                    priority: -20,
+                    reuseExistingChunk: true,
+                }
+            }
+        },
         minimizer: [
             new UglifyJSPlugin({
                 uglifyOptions: {
@@ -33,9 +57,7 @@ const config = {
                 }
             })
         ],
-        runtimeChunk: {
-            name: "manifest",
-        },
+        runtimeChunk: false,
     },
     output: {
         path: resolve('./public'),
@@ -101,6 +123,12 @@ const config = {
         //     filename: 'index.html',
         //     inject: 'body'
         // })
+        new webpack.ProvidePlugin({
+            'jQuery': 'jquery',
+            '$': 'jquery',
+            'Popper': 'popper.js',
+        }),
+        new AssetsPlugin({filename: resolve('./public/assets.json')})
     ]
 }
 
