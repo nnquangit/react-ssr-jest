@@ -3,9 +3,17 @@
     [
       "env",
       {
-        "modules": "commonjs"
+        "targets": {
+          "node": true
+        }
       }
     ],
+//    [
+//      "env",
+//      {
+//        "modules": "commonjs"
+//      }
+//    ],
     "react",
     "stage-2"
   ],

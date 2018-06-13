@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import {renderRoutes} from "react-router-config";
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import {routes} from "./routes";
+import './assets/app.css';
 
 class Master extends React.Component {
     render() {

@@ -7,12 +7,11 @@ const path = require('path')
 const port = 3000;
 const app = express();
 const webpack = require('webpack')
-const config = require('./webpack.config.js');
+// const config = require('./webpack.config.js');
+// const readFile = (output, file) => output.readFileSync(path.join(config.output.path, file), 'utf-8')
 const ReactDOMServer = require('react-dom/server')
-const {createApp} = require('./src/entry-server')
-const readFile = (output, file) => output.readFileSync(path.join(config.output.path, file), 'utf-8')
+const {createApp} = require('./public/server-bundle')
 const ejs = require('ejs');
-const assets = require('./public/assets.json');
 
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'html');
@@ -41,10 +40,10 @@ app.engine('html', ejs.renderFile);
 //     console.log("Client compiled", ReactDOMServer.renderToStaticMarkup(App))
 // });
 
-app.get('*', (req, res) => {
-    console.log(assets)
-    createApp({req, res}).then(context => res.render('index', context))
-})
+createApp({req: {url: '/inbox'}, res: ''}).then(({html}) => console.log(html))
+// app.get('*', (req, res) => {
+//     createApp({req, res}).then(context => res.render('index', context))
+// })
 
 // clientCompiler.hooks.tap("afterEmit",function (compilation, callback) {
 //     console.log("hookshookshooks ", Object.keys(compilation), compilation)
