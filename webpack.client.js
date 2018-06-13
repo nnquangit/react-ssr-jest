@@ -62,15 +62,15 @@ const config = {
     output: {
         path: resolve('./public'),
         publicPath: '/',
-        filename: '[name].[hash].js'
-        // libraryTarget: 'commonjs2'
+        filename: '[name].[hash].js',
+        libraryTarget: 'commonjs2'
     },
-    // resolve: {
-    //     extensions: ['.js', '.jsx'],
-    //     alias: {
-    //         '@': resolve('./src'),
-    //     }
-    // },
+    resolve: {
+        extensions: ['.js', '.jsx'],
+        alias: {
+            '@': resolve('./src'),
+        }
+    },
     module: {
         rules: [
             {
@@ -81,36 +81,31 @@ const config = {
             {
                 test: /\.css$/,
                 include: /node_modules/,
-                loaders: ['style-loader', {
-                    loader: 'css-loader',
-                    options: {
-                        modules: true
-                    }
-                }],
+                loaders: ['style-loader', 'css-loader'],
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         MiniCssExtractPlugin.loader,
-            //         {
-            //             loader: 'css-loader',
-            //             options: {importLoaders: 1, minimize: {discardComments: {removeAll: true}}}
-            //         },
-            //         'postcss-loader',
-            //     ],
-            // },
-            // {
-            //     test: /\.(sass|scss)$/,
-            //     use: [
-            //         MiniCssExtractPlugin.loader,
-            //         {
-            //             loader: 'css-loader',
-            //             options: {minimize: {discardComments: {removeAll: true}}}
-            //         },
-            //         'postcss-loader',
-            //         'sass-loader'
-            //     ],
-            // },
+            {
+                test: /\.css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {importLoaders: 1, minimize: {discardComments: {removeAll: true}}}
+                    },
+                    'postcss-loader',
+                ],
+            },
+            {
+                test: /\.(sass|scss)$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {minimize: {discardComments: {removeAll: true}}}
+                    },
+                    'postcss-loader',
+                    'sass-loader'
+                ],
+            },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'url-loader',
@@ -124,11 +119,11 @@ const config = {
         ]
     },
     plugins: [
-        // new HardSourceWebpackPlugin(),
-        // new MiniCssExtractPlugin({
-        //     filename: "[name].[hash].css",
-        //     chunkFilename: "[name].[hash].css"
-        // }),
+        new HardSourceWebpackPlugin(),
+        new MiniCssExtractPlugin({
+            filename: "[name].[hash].css",
+            chunkFilename: "[name].[hash].css"
+        }),
         // new HtmlWebpackPlugin({
         //     template: './src/index.html',
         //     filename: 'index.html',
@@ -139,7 +134,7 @@ const config = {
             '$': 'jquery',
             'Popper': 'popper.js',
         }),
-        // new AssetsPlugin({filename: resolve('./public/assets.json')})
+        new AssetsPlugin({filename: resolve('./public/assets.json')})
     ]
 }
 
