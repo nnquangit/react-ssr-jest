@@ -14,6 +14,27 @@ const AssetsPlugin = require('assets-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
 
+
+class TestWebpackPlugin {
+    constructor(options) {
+        this.options = {
+            filename: 'ssr-client.json',
+            ...options
+        }
+    }
+
+    apply(compiler) {
+        compiler.hooks.afterEmit.tap("Make ssr-client", function (compilation, cb) {
+            var stats = compilation.getStats().toJson({
+                chunks: false,
+                modules: false
+            });
+            console.log(stats.entrypoints.app.assets)
+            return cb
+        });
+    }
+}
+
 const config = {
     entry: {
         app: './src/entry-client.js'
@@ -25,40 +46,40 @@ const config = {
         maxEntrypointSize: 1024 * 1024,
         maxAssetSize: 500 * 1024,
     },
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: "async",
-    //         minSize: 1000,
-    //         minChunks: 1,
-    //         maxAsyncRequests: 5,
-    //         maxInitialRequests: 3,
-    //         name: true,
-    //         cacheGroups: {
-    //             vendor: {
-    //                 test: /[\\/]node_modules[\\/]/,
-    //                 name: "vendor",
-    //                 chunks: "initial",
-    //                 priority: -10
-    //             },
-    //             default: {
-    //                 minChunks: 1,
-    //                 priority: -20,
-    //                 reuseExistingChunk: true,
-    //             }
-    //         }
-    //     },
-    //     minimizer: [
-    //         new UglifyJSPlugin({
-    //             uglifyOptions: {
-    //                 warnings: false, compress: true,
-    //                 output: {comments: false},
-    //                 cache: true,
-    //                 parallel: true
-    //             }
-    //         })
-    //     ],
-    //     runtimeChunk: false,
-    // },
+    optimization: {
+        splitChunks: {
+            chunks: "async",
+            minSize: 1000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            name: true,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial",
+                    priority: -10
+                },
+                default: {
+                    minChunks: 1,
+                    priority: -20,
+                    reuseExistingChunk: true,
+                }
+            }
+        },
+        minimizer: [
+            new UglifyJSPlugin({
+                uglifyOptions: {
+                    warnings: false, compress: true,
+                    output: {comments: false},
+                    cache: true,
+                    parallel: true
+                }
+            })
+        ],
+        runtimeChunk: false,
+    },
     output: {
         path: resolve('./public'),
         publicPath: '/',
@@ -134,7 +155,8 @@ const config = {
             '$': 'jquery',
             'Popper': 'popper.js',
         }),
-        new AssetsPlugin({filename: resolve('./public/assets.json')})
+        new AssetsPlugin({filename: './public/assets.json'}),
+        new TestWebpackPlugin()
     ]
 }
 
