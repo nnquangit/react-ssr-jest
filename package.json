@@ -4,10 +4,12 @@
   "description": "Reactjs start kit integrating `reactjs`, `ssr`,`webpack 4`,`jest`,...",
   "main": "server.js",
   "scripts": {
+    "client": "webpack-dev-server --inline --progress --hot --config webpack.client.js",
     "start": "node server",
-    "build": "rimraf public && npm run build:client",
+    "build": "rimraf public && npm run build:server:vue && npm run build:server:react",
     "build:client": "cross-env NODE_ENV=production webpack --config webpack.client.js --progress --hide-modules",
-    "build:server": "cross-env NODE_ENV=production webpack --config webpack.server.js --progress --hide-modules"
+    "build:server:vue": "cross-env NODE_ENV=production webpack --config webpack.server.vue.js --progress --hide-modules",
+    "build:server:react": "cross-env NODE_ENV=production webpack --config webpack.server.react.js --progress --hide-modules"
   },
   "repository": {
     "type": "git",
@@ -56,6 +58,9 @@
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.3.1",
     "style-loader": "^0.21.0",
+    "vue": "^2.5.16",
+    "vue-server-renderer": "^2.5.16",
+    "webpack-dev-server": "^3.1.4",
     "webpack-node-externals": "^1.7.2"
   },
   "jest": {

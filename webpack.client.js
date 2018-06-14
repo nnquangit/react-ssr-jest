@@ -10,107 +10,99 @@ const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AssetsPlugin = require('assets-webpack-plugin')
+const {SSRClientPlugin} = require('./plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
 
 const config = {
-    entry: {
-        app: './src/entry-client.js'
-    },
+    entry: {app: resolve('./src/entry-client.js')},
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : '#cheap-module-eval-source-map',
+    devServer: {
+        open: false,
+        index: "index.html",
+        openPage: '',
+        contentBase: './client',
+        compress: true,
+        hot: true,
+        historyApiFallback: true
+    },
     performance: {
         hints: isProd ? 'warning' : false,
         maxEntrypointSize: 1024 * 1024,
         maxAssetSize: 500 * 1024,
     },
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: "async",
-    //         minSize: 1000,
-    //         minChunks: 1,
-    //         maxAsyncRequests: 5,
-    //         maxInitialRequests: 3,
-    //         name: true,
-    //         cacheGroups: {
-    //             vendor: {
-    //                 test: /[\\/]node_modules[\\/]/,
-    //                 name: "vendor",
-    //                 chunks: "initial",
-    //                 priority: -10
-    //             },
-    //             default: {
-    //                 minChunks: 1,
-    //                 priority: -20,
-    //                 reuseExistingChunk: true,
-    //             }
-    //         }
-    //     },
-    //     minimizer: [
-    //         new UglifyJSPlugin({
-    //             uglifyOptions: {
-    //                 warnings: false, compress: true,
-    //                 output: {comments: false},
-    //                 cache: true,
-    //                 parallel: true
-    //             }
-    //         })
-    //     ],
-    //     runtimeChunk: false,
-    // },
+    optimization: {
+        splitChunks: {
+            chunks: "async",
+            minSize: 1000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            name: true,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial",
+                    priority: -10
+                },
+                default: {
+                    minChunks: 1,
+                    priority: -20,
+                    reuseExistingChunk: true,
+                }
+            }
+        },
+        minimizer: [
+            new UglifyJSPlugin({
+                uglifyOptions: {
+                    warnings: false, compress: true,
+                    output: {comments: false},
+                    cache: true,
+                    parallel: true
+                }
+            })
+        ],
+        runtimeChunk: true,
+    },
     output: {
         path: resolve('./public'),
         publicPath: '/',
         filename: '[name].[hash].js'
-        // libraryTarget: 'commonjs2'
     },
-    // resolve: {
-    //     extensions: ['.js', '.jsx'],
-    //     alias: {
-    //         '@': resolve('./src'),
-    //     }
-    // },
+    resolve: {
+        extensions: ['.js', '.jsx'],
+        alias: {'@': resolve('./src')}
+    },
     module: {
         rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader?cacheDirectory',
-                exclude: /node_modules/
-            },
+            {test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/},
             {
                 test: /\.css$/,
-                include: /node_modules/,
-                loaders: ['style-loader', {
-                    loader: 'css-loader',
-                    options: {
-                        modules: true
-                    }
-                }],
+                exclude: /node_modules/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {importLoaders: 1, minimize: {modules: true, discardComments: {removeAll: true}}}
+                    },
+                    'postcss-loader',
+                ],
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         MiniCssExtractPlugin.loader,
-            //         {
-            //             loader: 'css-loader',
-            //             options: {importLoaders: 1, minimize: {discardComments: {removeAll: true}}}
-            //         },
-            //         'postcss-loader',
-            //     ],
-            // },
-            // {
-            //     test: /\.(sass|scss)$/,
-            //     use: [
-            //         MiniCssExtractPlugin.loader,
-            //         {
-            //             loader: 'css-loader',
-            //             options: {minimize: {discardComments: {removeAll: true}}}
-            //         },
-            //         'postcss-loader',
-            //         'sass-loader'
-            //     ],
-            // },
+            {
+                test: /\.(sass|scss)$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {minimize: {discardComments: {removeAll: true}}}
+                    },
+                    'postcss-loader',
+                    'sass-loader'
+                ],
+            },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'url-loader',
@@ -125,21 +117,21 @@ const config = {
     },
     plugins: [
         // new HardSourceWebpackPlugin(),
-        // new MiniCssExtractPlugin({
-        //     filename: "[name].[hash].css",
-        //     chunkFilename: "[name].[hash].css"
-        // }),
-        // new HtmlWebpackPlugin({
-        //     template: './src/index.html',
-        //     filename: 'index.html',
-        //     inject: 'body'
-        // })
+        new MiniCssExtractPlugin({
+            filename: "[name].[hash].css",
+            chunkFilename: "[name].[hash].css"
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'index.html',
+            inject: 'body'
+        }),
         new webpack.ProvidePlugin({
             'jQuery': 'jquery',
             '$': 'jquery',
             'Popper': 'popper.js',
         }),
-        // new AssetsPlugin({filename: resolve('./public/assets.json')})
+        new SSRClientPlugin()
     ]
 }
 

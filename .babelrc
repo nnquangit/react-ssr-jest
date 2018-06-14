@@ -1,19 +1,20 @@
 {
   "presets": [
-    [
-      "env",
-      {
-        "targets": {
-          "node": true
-        }
-      }
-    ],
-//    [
-//      "env",
-//      {
-//        "modules": "commonjs"
-//      }
-//    ],
+    //    [
+    //      "env",
+    //      {
+    //        "targets": {
+    //          "node": true
+    //        }
+    //      }
+    //    ],
+    //    [
+    //      "env",
+    //      {
+    //        "modules": "commonjs"
+    //      }
+    //    ],
+    "env",
     "react",
     "stage-2"
   ],

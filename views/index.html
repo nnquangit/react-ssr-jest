@@ -1,12 +1,15 @@
 <!doctype html>
 <html>
-<head>
-    <%-helmet.title.toString()%>
-    <%-helmet.meta.toString()%>
-    <%-helmet.link.toString()%>
-    <link rel="stylesheet" href="https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css"/>
-</head>
-<body>
-    <div id="app"><%-html%></div>
-</body>
+    <head>
+        <link rel="stylesheet" href="https://bootswatch.com/_vendor/bootstrap/dist/css/bootstrap.min.css"/>
+        <% manifest.css.forEach(function(file){ %>
+        <link rel="stylesheet" href="<%-manifest.publicPath+file%>"/>
+        <% }); %>
+    </head>
+    <body>
+        <%-html%>
+        <% manifest.js.forEach(function(file){ %>
+        <script type="text/javascript" src="<%-manifest.publicPath+file%>"></script>
+        <% }); %>
+    </body>
 </html>
