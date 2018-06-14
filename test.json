@@ -1,0 +1,82 @@
+{
+  "errors": [],
+  "warnings": [],
+  "version": "4.12.0",
+  "hash": "c95adf1380079b5c77b6",
+  "publicPath": "/",
+  "outputPath": "/Users/nnquangit/projects/github/react-ssr-jest/public",
+  "assetsByChunkName": {
+    "vendor": "vendor.c95adf1380079b5c77b6.js",
+    "app": [
+      "app.c95adf1380079b5c77b6.css",
+      "app.c95adf1380079b5c77b6.js"
+    ]
+  },
+  "assets": [
+    {
+      "name": "vendor.c95adf1380079b5c77b6.js",
+      "size": 141343,
+      "chunks": [
+        0
+      ],
+      "chunkNames": [
+        "vendor"
+      ],
+      "emitted": true
+    },
+    {
+      "name": "app.c95adf1380079b5c77b6.css",
+      "size": 65,
+      "chunks": [
+        1
+      ],
+      "chunkNames": [
+        "app"
+      ],
+      "emitted": true
+    },
+    {
+      "name": "app.c95adf1380079b5c77b6.js",
+      "size": 3307,
+      "chunks": [
+        1
+      ],
+      "chunkNames": [
+        "app"
+      ],
+      "emitted": true
+    }
+  ],
+  "filteredAssets": 0,
+  "entrypoints": {
+    "app": {
+      "chunks": [
+        0,
+        1
+      ],
+      "assets": [
+        "vendor.c95adf1380079b5c77b6.js",
+        "app.c95adf1380079b5c77b6.css",
+        "app.c95adf1380079b5c77b6.js"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "namedChunkGroups": {
+    "app": {
+      "chunks": [
+        0,
+        1
+      ],
+      "assets": [
+        "vendor.c95adf1380079b5c77b6.js",
+        "app.c95adf1380079b5c77b6.css",
+        "app.c95adf1380079b5c77b6.js"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "children": []
+}
