@@ -22,6 +22,13 @@ app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 
 const clientConfig = require('./webpack.client.js');
+clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
+clientConfig.output.filename = '[name].js'
+clientConfig.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+)
+
 let manifest, clientResolver, clientPromise = new Promise((resolve, reject) => clientResolver = resolve)
 const clientCompiler = webpack(clientConfig);
 clientCompiler.outputFileSystem = new MFS()
@@ -32,14 +39,15 @@ app.use(require('webpack-dev-middleware')(clientCompiler, {
 }));
 clientCompiler.hooks.done.tap("Client compiled", function (compilation, callback) {
     let {path: outputPath} = compilation.compilation.options.output;
-    let context = JSON.parse(readFile(clientCompiler.outputFileSystem, path.join(outputPath, 'ssr-client-manifest.json')));
-    manifest = context;
+    let context = readFile(clientCompiler.outputFileSystem, path.join(outputPath, 'ssr-client-manifest.json'));
+    manifest = JSON.parse(context);
     clientResolver();
-    console.log(">>>>>>>>>>> Client compiled done")
+    console.log(">>>>>>>>>>> Client compiled done", context)
     return callback;
 });
+app.use(require('webpack-hot-middleware')(clientCompiler))
 
-const reactConfig = require('./webpack.server.react.js');
+const reactConfig = require('./webpack.server.js');
 let serverBundle, reactResolver, reactPromise = new Promise((resolve, reject) => reactResolver = resolve)
 const reactCompiler = webpack(reactConfig);
 reactCompiler.outputFileSystem = new MFS()
@@ -53,7 +61,7 @@ reactCompiler.hooks.done.tap("React server compiler", function (compilation, cal
     let context = readFile(reactCompiler.outputFileSystem, path.join(outputPath, filename));
     serverBundle = eval(context);
     reactResolver();
-    console.log(">>>>>>>>>>> Server compiled done")
+    console.log(">>>>>>>>>>> Server compiled done", context)
     return callback;
 });
 reactCompiler.watch({}, (err, stats) => console.log("Webpack server watching..."))

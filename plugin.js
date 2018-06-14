@@ -18,7 +18,7 @@ class SSRClientPlugin {
                 css: assets.filter(name => name.match(/\.css$/)),
                 js: assets.filter(name => name.match(/\.js$/))
             }
-            if (compiler.outputFileSystem.mkdirpSync) {
+            if (compiler.outputFileSystem && compiler.outputFileSystem.mkdirpSync) {
                 compiler.outputFileSystem.mkdirpSync(stats.outputPath);
                 compiler.outputFileSystem.writeFileSync(path.join(stats.outputPath, filename), JSON.stringify(data));
             } else {

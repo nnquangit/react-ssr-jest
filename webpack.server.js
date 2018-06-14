@@ -1,21 +1,20 @@
-const webpack = require('webpack');
 const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-
-const resolve = (file) => path.resolve(__dirname, file)
+const nodeExternals = require('webpack-node-externals')
+const {SSRServerPlugin} = require('./plugin')
 
 module.exports = {
     target: 'node',
     mode: 'production',
-    entry: resolve('src/entry-server.js'),
+    entry: path.resolve(__dirname, 'src/entry-server.js'),
     output: {
-        path: resolve('public'),
-        filename: 'server-bundle.js',
+        path: path.resolve(__dirname, 'public'),
+        filename: 'server-react-bundle.js',
         libraryTarget: 'commonjs2'
     },
+    externals: nodeExternals({whitelist: /\.css$/}),
     module: {
         rules: [
-            {test: /\.css$/, use: 'ignore-loader'},
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
@@ -25,10 +24,6 @@ module.exports = {
     },
     plugins: [
         new HardSourceWebpackPlugin(),
-        new webpack.ProvidePlugin({
-            'jQuery': 'jquery',
-            '$': 'jquery',
-            'Popper': 'popper.js',
-        })
+        new SSRServerPlugin()
     ]
 };

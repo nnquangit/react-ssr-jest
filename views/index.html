@@ -7,7 +7,7 @@
         <% }); %>
     </head>
     <body>
-        <%-html%>
+        <div id="app"><%-html%></div>
         <% manifest.js.forEach(function(file){ %>
         <script type="text/javascript" src="<%-manifest.publicPath+file%>"></script>
         <% }); %>
