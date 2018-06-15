@@ -3,7 +3,7 @@ const define = {
 }
 
 const actions = {
-    addCounter: () => ({type: define.ADD})
+    addCounter: () => (dispatch, rootState) => dispatch({type: define.ADD})
 }
 
 const reducer = (state = 15, action) => {
