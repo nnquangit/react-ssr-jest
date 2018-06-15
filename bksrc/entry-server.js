@@ -2,10 +2,16 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import {Provider} from "react-redux";
+import {applyMiddleware, compose, createStore} from 'redux'
+import thunk from "redux-thunk";
 import {App} from './App'
-import {rootStore} from './store';
+import {rootReducers} from './store';
 
-const store = rootStore()
+const store = createStore(
+    rootReducers(),
+    {},
+    compose(applyMiddleware(thunk))
+)
 
 export function createApp({req, res}) {
     let context = {};

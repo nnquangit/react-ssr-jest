@@ -27,6 +27,7 @@
     "connected-react-router": "^4.3.0",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "history": "^4.7.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-helmet": "^5.2.0",
