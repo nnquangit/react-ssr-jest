@@ -26,6 +26,7 @@
       ]
     }
   },
+  "plugins": ["react-hot-loader/babel"],
   "comments": false,
   "compact": false
 }

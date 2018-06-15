@@ -8,15 +8,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const AssetsPlugin = require('assets-webpack-plugin')
 const {SSRClientPlugin} = require('./plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
 
 const config = {
-    entry: {app: resolve('./src/entry-client.js')},
+    entry: {app: resolve('./bksrc/entry-client.js')},
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : '#cheap-module-eval-source-map',
     devServer: {
@@ -73,12 +71,24 @@ const config = {
         filename: '[name].[hash].js'
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
-        alias: {'@': resolve('./src')}
+        extensions: ['.js', '.jsx', '.json', '.vue'],
+        alias: {
+            '@': resolve('./bksrc'),
+            'vue$': 'vue/dist/vue.common.js'
+        }
     },
     module: {
         rules: [
-            {test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/},
+            {
+                test: /\.(js|jsx)$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: {hotReload: true}
+            },
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
@@ -93,6 +103,7 @@ const config = {
             },
             {
                 test: /\.(sass|scss)$/,
+                exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     {
@@ -121,17 +132,12 @@ const config = {
             filename: "[name].[hash].css",
             chunkFilename: "[name].[hash].css"
         }),
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            filename: 'index.html',
-            inject: 'body'
-        }),
         new webpack.ProvidePlugin({
             'jQuery': 'jquery',
             '$': 'jquery',
             'Popper': 'popper.js',
         }),
-        new SSRClientPlugin()
+        new SSRClientPlugin({filename: 'ssr-client-manifest.json'})
     ]
 }
 

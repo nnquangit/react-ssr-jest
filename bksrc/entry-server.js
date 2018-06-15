@@ -1,21 +1,22 @@
 import React from 'react';
-import {renderToString} from 'react-dom/server';
-import {StaticRouter} from "react-router-dom";
-import {App} from './App';
-import {Helmet} from "react-helmet";
+import ReactDOMServer from 'react-dom/server';
+import StaticRouter from 'react-router-dom/StaticRouter';
+import {Provider} from "react-redux";
+import {App} from './App'
+import {rootStore} from './store';
+
+const store = rootStore()
 
 export function createApp({req, res}) {
+    let context = {};
     return new Promise((resolve, reject) => {
-        const html = renderToString(
-            <div>
-                <div>Server before</div>
-                <StaticRouter location={req.url} context={{}}>
+        const html = ReactDOMServer.renderToString(
+            <Provider store={store}>
+                <StaticRouter location="/" context={context}>
                     <App/>
                 </StaticRouter>
-                <div>Server after</div>
-            </div>
+            </Provider>
         );
-        const helmet = Helmet.renderStatic();
-        resolve({html, helmet})
+        resolve({html})
     })
 }

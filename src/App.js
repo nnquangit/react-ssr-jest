@@ -1,13 +1,9 @@
-import React from 'react';
-import {Child} from './Child';
+import Vue from 'vue'
+import './app.css'
 
-export class App extends React.Component {
+Vue.config.productionTip = false
 
-    render() {
-        return (<div>
-            Hello World Reactabcasq
-            <Child/>
-            <button className="square" onClick={() => alert('click')}>Click</button>
-        </div>)
-    }
+export function rootApp(ssrContext) {
+    const app = new Vue({data: {title: 'abcds'}, template: `<div id="app">Hello World Vuejs {{title}}</div>`})
+    return {app}
 }

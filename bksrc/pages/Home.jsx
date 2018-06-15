@@ -1,14 +1,16 @@
 import React from 'react';
-import {Helmet} from "react-helmet";
-import {render} from 'react-dom';
+import {connect} from 'react-redux'
+import {actions} from '@/store/reducers/counter'
 
-export class Home extends React.Component {
+class HomePage extends React.Component {
     render() {
-        return (<p>
-            <Helmet>
-                <title>Home</title>
-            </Helmet>
-            This is home
-        </p>)
+        let {counter, addCounter} = this.props;
+        return (<div>
+            Home abca {counter} caqwqasqw
+            <button type="button" onClick={addCounter}>Thu 1 cai nha</button>
+        </div>)
     }
 }
+
+export const Home = connect(state => ({counter: state.counter}), {...actions})(HomePage)
+

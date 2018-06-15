@@ -1,12 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router} from "react-router-dom";
-import {App} from './App';
+import BrowserRouter from 'react-router-dom/BrowserRouter';
+import {Provider} from "react-redux";
+import {App} from './App'
+import {rootStore} from './store';
 
-ReactDOM.render((<div>
-    <div>Client before</div>
-    <Router>
-        <App/>
-    </Router>
-    <div>Client after</div>
-</div>), document.getElementById('app'));
+const store = rootStore()
+
+const render = (Main) => {
+    ReactDOM.hydrate((
+        <Provider store={store}>
+            <BrowserRouter><Main/></BrowserRouter>
+        </Provider>
+    ), document.getElementById('app'));
+}
+
+render(App)
+
+
+if (module.hot) {
+    module.hot.accept('./App', () => {
+        const {App: nextApp} = require('./App')
+        render(nextApp)
+    })
+}

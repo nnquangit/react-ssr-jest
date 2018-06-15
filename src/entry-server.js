@@ -1,10 +1,15 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import {App} from './App';
+import {rootApp} from './app'
+
+const renderer = require('vue-server-renderer').createRenderer()
 
 export function createApp({req, res}) {
     return new Promise((resolve, reject) => {
-        const html = ReactDOMServer.renderToString(<App/>);
-        resolve({html})
+        let {app} = rootApp({})
+        renderer.renderToString(app, (err, html) => {
+            if (err) throw err
+            resolve({html})
+        })
+
     })
 }
