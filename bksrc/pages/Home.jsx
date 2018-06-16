@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from '@/plugins/ExStore'
+import {connect} from '../plugins/ExStore'
 
 class HomePage extends React.Component {
     render() {

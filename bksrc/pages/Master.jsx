@@ -1,6 +1,6 @@
 import React from 'react';
 import {renderRoutes} from "react-router-config";
-import '@/app.css'
+import '../app.css'
 
 export class Master extends React.Component {
     render() {

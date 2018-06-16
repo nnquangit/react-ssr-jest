@@ -56,8 +56,8 @@ reactCompiler.hooks.done.tap("React server compiler", function (compilation, cal
     let {filename, path: outputPath} = compilation.compilation.options.output;
     let context = readFile(reactCompiler.outputFileSystem, path.join(outputPath, filename));
     serverBundle = eval(context);
-    reactResolver();
     console.log(">>>>>>>>>>> Server compiled done")
+    reactResolver();
     return callback;
 });
 reactCompiler.watch({}, (err, stats) => console.log("Webpack server watching..."))

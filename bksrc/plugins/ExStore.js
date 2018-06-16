@@ -22,10 +22,16 @@ function observe(o, callback) {
     return buildProxy('', o);
 }
 
-const store = {state: {}, actions: {}, mutations: {}, getters: {}, services: {}, components: []}
+const store = {
+    state: observe({}, () => store.components.map(v => v.comp.setState(v.mapToProps(store)))),
+    actions: {}, mutations: {}, getters: {}, services: {}, components: []
+}
 
-export const replaceState = (init) => {
-    store.state = observe(init, () => store.components.map(v => v.comp.setState(v.mapToProps(store))))
+export const replaceState = (newstate) => {
+    Object.assign(store.state, newstate)
+}
+export const exportState = () => {
+    return {...store.state}
 }
 export const attachComponents = (comp, mapToProps) => {
     store.components.push({comp, mapToProps})
@@ -75,8 +81,8 @@ export const connect = (mapToProps = {}) => {
             constructor(props) {
                 super(props);
 
-                const router = {match, location, history} = this.props
-                attachServices({router})
+                // const router = {match, location, history} = this.props
+                // attachServices({router})
 
                 this.state = mapToProps(store)
                 attachComponents(this, mapToProps);
@@ -89,7 +95,12 @@ export const connect = (mapToProps = {}) => {
     }
 }
 
-export const makeStore = (init) => {
-    replaceState(init)
+store.exportState = exportState;
+store.replaceState = replaceState;
+store.attachComponents = attachComponents;
+store.attachModules = attachModules;
+store.attachServices = attachServices;
+
+export const makeStore = () => {
     return store;
 }
