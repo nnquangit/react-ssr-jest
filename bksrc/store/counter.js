@@ -18,4 +18,8 @@ const reducer = (state = 15, action) => {
     }
 }
 
-export {define, actions, reducer}
+const getters = {
+    counter: (state) => state
+}
+
+export {define, actions, getters, reducer}

@@ -29,7 +29,6 @@ const render = (Main) => {
 
 render(App)
 
-
 if (module.hot) {
     module.hot.accept('./App', () => {
         const {App: nextApp} = require('./App')

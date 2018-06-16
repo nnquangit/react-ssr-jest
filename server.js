@@ -38,7 +38,7 @@ clientCompiler.hooks.done.tap("Client compiled", function (compilation, callback
     let context = readFile(clientCompiler.outputFileSystem, path.join(outputPath, 'ssr-client-manifest.json'));
     manifest = JSON.parse(context);
     clientResolver();
-    console.log(">>>>>>>>>>> Client compiled done", context)
+    console.log(">>>>>>>>>>> Client compiled done")
     return callback;
 });
 app.use(require('webpack-hot-middleware')(clientCompiler))
@@ -57,7 +57,7 @@ reactCompiler.hooks.done.tap("React server compiler", function (compilation, cal
     let context = readFile(reactCompiler.outputFileSystem, path.join(outputPath, filename));
     serverBundle = eval(context);
     reactResolver();
-    console.log(">>>>>>>>>>> Server compiled done", context)
+    console.log(">>>>>>>>>>> Server compiled done")
     return callback;
 });
 reactCompiler.watch({}, (err, stats) => console.log("Webpack server watching..."))
