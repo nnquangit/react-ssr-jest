@@ -1,25 +1,19 @@
-import {api} from '../services';
-
 const define = {
-    ADD: 'COUNTER_ADD',
+    ADD: 'COUNTER_ADD'
 }
+
+const state = {current: 10}
 
 const actions = {
-    addCounter: () => (dispatch, rootState) => dispatch({type: define.ADD})
+    addCounter: ({commit}) => commit(define.ADD)
 }
 
-const reducer = (state = 15, action) => {
-    switch (action.type) {
-        case define.ADD:
-            state += 1;
-            return state
-        default:
-            return state
-    }
+const mutations = {
+    [define.ADD]: (state) => state.current = state.current + 1
 }
 
 const getters = {
-    counter: (state) => state
+    currentCounter: (state) => state.current
 }
 
-export {define, actions, getters, reducer}
+export default {define, state, actions, mutations, getters}
