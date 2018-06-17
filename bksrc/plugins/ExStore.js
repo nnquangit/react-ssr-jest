@@ -1,12 +1,14 @@
 import React from 'react';
 import {withRouter} from 'react-router'
+import * as Rx from "rxjs";
 
-function observe(o, callback) {
+function observe(o, before, after) {
     function buildProxy(prefix, o) {
         return new Proxy(o, {
             set(target, property, value) {
+                before(store);
                 let result = target[property] = value;
-                callback(prefix + property, value);
+                after(store);
                 return result;
             },
             get(target, property) {
@@ -22,10 +24,110 @@ function observe(o, callback) {
     return buildProxy('', o);
 }
 
-const store = {
-    state: observe({}, () => store.components.map(v => v.comp.setState(v.mapToProps(store)))),
-    actions: {}, mutations: {}, getters: {}, services: {}, components: []
+const storeUpdate = (store) => {
+    store.components.map(v => v.comp.setState(v.mapToProps(store)))
 }
+const store = {
+    state: observe(
+        {},
+        (cur) => console.log('before'),
+        (cur) => store.components.map(v => v.comp.setState(v.mapToProps(store)))
+    ),
+    actions: {}, mutations: {}, getters: {}, services: {},
+    components: [],
+    plugins: [storeUpdate]
+}
+
+// setTimeout(function(){
+//     subject.data.actions.addCounter()
+// }, 2000)
+
+
+// console.log(subject.value)
+
+// function factory(reducerByType, initialState) {
+//     const caction = new Rx.Subject;
+//     const cstate = caction
+//         .startWith(initialState)
+//         .scan((nstate, naction) => {
+//             if (reducerByType.hasOwnProperty(naction.type)) {
+//                 return reducerByType[naction.type](nstate, naction);
+//             }
+//             return nstate;
+//         })
+//         .distinctUntilChanged();
+//     //
+//     //
+//     // cstate.subscribe((x) => {
+//     //         console.log('Next: ', x);
+//     //     }, (err) => {
+//     //         console.log('Error: ', err);
+//     //     }, () => {
+//     //         console.log('Completed');
+//     //     }
+//     // );
+//
+//     return {
+//         // cstate,
+//         cdispatch: (payload) => caction.onNext(payload)
+//     }
+// }
+//
+// let {cdispatch} = factory({
+//     ADD: (state, action) => {
+//         console.log()
+//         return state + action.number
+//     },
+//     SUBTRACT: (state, action) => state - action.number,
+// }, 0)
+//
+// cdispatch({type: 'ADD', number: 10})
+// cdispatch({type: 'ADD', number: 10})
+// console.log(cstate)
+// function factory(reducerByType, initialState) {
+//     const action$ = new Rx.Subject();
+//     const state$ = action$
+//         .startWith(initialState)
+//         .scan((state, action) => {
+//             if (reducerByType.hasOwnProperty(action.type)) {
+//                 return reducerByType[action.type](state, action);
+//             }
+//
+//             return state;
+//         })
+//         .distinctUntilChanged();
+//
+//
+//     return {
+//         action$,
+//         state$,
+//         dispatch: action => action$.next(action)
+//     }
+// }
+//
+// const {state$, dispatch} = factory({
+//     ADD: (state, action) => state + action.number,
+//     SUBTRACT: (state, action) => state - action.number,
+// }, 0);
+//
+// state$.subscribe(val => console.log(val));
+//
+// dispatch({
+//     type: 'ADD',
+//     number: 10,
+// });
+//
+// dispatch({
+//     type: 'SUBTRACT',
+//     number: 15,
+// });
+//
+// dispatch({
+//     type: 'SUBTRACT',
+//     number: 0,
+// });
+
+// Object.assign(source, {auth: {isLogin: true}})
 
 export const replaceState = (newstate) => {
     Object.assign(store.state, newstate)
@@ -55,7 +157,7 @@ export const attachModules = (mods) => {
             Object.keys(mods[key].getters).map(k => {
                 store.getters[k] = (payload) => {
                     return mods[key].getters[k](
-                        store.state[key],
+                        {...store.state[key]},
                         payload
                     )
                 }

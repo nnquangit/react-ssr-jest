@@ -28,6 +28,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "history": "^4.7.2",
+    "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-helmet": "^5.2.0",
@@ -37,6 +38,8 @@
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "rx": "^4.1.0",
+    "rxjs": "^6.2.1",
     "vue": "^2.5.16",
     "vue-hot-reload-api": "^2.3.0",
     "vue-server-renderer": "^2.5.16"
