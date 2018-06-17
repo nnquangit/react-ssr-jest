@@ -74,6 +74,17 @@ attMod({
             'DEMO_ADD': (state) => state.current = state.current + 1,
             'DEMO_MORE': (state) => state.more = state.more + 1
         }
+    },
+    auth: {
+        state: {current: 10, more: 0},
+        actions: {
+            authCounter: ({state, commit}) => commit('AUTH_ADD'),
+            authMore: ({state, commit}) => commit('AUTH_MORE')
+        },
+        mutations: {
+            'AUTH_ADD': (state) => state.current = state.current + 1,
+            'AUTH_MORE': (state) => state.more = state.more + 1
+        }
     }
 })
 
