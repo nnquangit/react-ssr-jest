@@ -7,40 +7,42 @@ import {attachComponents} from "../plugins/ExStore";
 
 const subject = new Rx.Subject();
 
-subject.data = {
-    state: {}, actions: {}, mutations: {}, getters: {},
-    services: {},
-    plugins: [
-        //Plugin change root state
-        (root) => subject.subscribe((newstate) => {
-            console.log('Logger', newstate);
-            // subject.data.state = newstate
-        })
-    ]
+function createStore(mods, plugins = {}) {
+    subject.data = {
+        state: {}, actions: {}, mutations: {}, getters: {},
+        services: {},
+        plugins: [
+            (_store) => _store.subscribe((_state) => console.log('LOG ', _state)),
+            ...plugins
+        ]
+    }
+
+    attMod(mods)
+
+    subject.data.plugins.map(plugin => plugin(subject))
 }
 
-subject.data.plugins.map(plugin => plugin(subject))
 
 function attMod(mods) {
     const _store = subject.data;
     Object.keys(mods).map((key) => {
-        _store.state[key] = mods[key].state
 
-        const _state = new Proxy(_store.state[key], {
-            get: (obj, prop) => obj[prop],
-            set: (obj, prop, value) => {
-                obj[prop] = value
-                subject.next({..._store.state, [key]: {...obj}})
-                return true;
-            }
-        })
+        // const _state = new Proxy(_store.state[key], {
+        //     get: (obj, prop) => obj[prop],
+        //     set: (obj, prop, value) => {
+        //         obj[prop] = value
+        //         // subject.next({..._store.state})
+        //         // console.log('Logger', {..._state});
+        //         return true;
+        //     }
+        // })
 
         if (mods[key].mutations) {
             Object.keys(mods[key].mutations).map(k => {
-                _store.mutations[k] = (payload) => mods[key].mutations[k](
-                    _state,
-                    payload
-                )
+                _store.mutations[k] = (payload) => {
+                    mods[key].mutations[k](_store.state[key], payload)
+                    subject.next(JSON.parse(JSON.stringify(_store.state)))
+                }
             })
         }
         if (mods[key].getters) {
@@ -56,14 +58,14 @@ function attMod(mods) {
                 _store.actions[k] = (payload) => mods[key].actions[k]({
                     commit: (mutation, payloads) => _store.mutations[mutation](payloads),
                     state: {..._store.state[key]},
-                    rootState: _store
+                    rootState: {..._store, state: JSON.parse(JSON.stringify(_store.state))}
                 }, payload)
             })
         }
     })
 }
 
-attMod({
+createStore({
     counter: {
         state: {current: 10, more: 0},
         actions: {
@@ -76,24 +78,34 @@ attMod({
         }
     },
     auth: {
-        state: {current: 10, more: 0},
+        state: {auth: 10, more: 0},
         actions: {
             authCounter: ({state, commit}) => commit('AUTH_ADD'),
             authMore: ({state, commit}) => commit('AUTH_MORE')
         },
         mutations: {
-            'AUTH_ADD': (state) => state.current = state.current + 1,
+            'AUTH_ADD': (state) => state.auth = state.auth + 1,
             'AUTH_MORE': (state) => state.more = state.more + 1
         }
     }
-})
+}, [
+    (_store) => {
+        Object.assign(_store.data.state, {counter: {current: 20, more: 0}, auth: {auth: 20, more: 0}})
+        _store.subscribe((_state) => console.log('Saved !', _state))
+    }
+])
 
 subject.data.actions.addCounter();
 subject.data.actions.addMore();
+
+subject.data.actions.authCounter();
+subject.data.actions.authMore();
+
 subject.data.actions.addCounter();
 subject.data.actions.addMore();
-subject.data.actions.addCounter();
-subject.data.actions.addMore();
+
+subject.data.actions.authCounter();
+subject.data.actions.authMore();
 
 const connect = (mapToProps = {}) => {
     return (WrappedComponent) => {
@@ -121,8 +133,23 @@ const connect = (mapToProps = {}) => {
 }
 
 class HomePage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {view: false}
+    }
+
+    componentDidMount() {
+        this.setState({view: true})
+    }
+
     render() {
         let {counter, addCounter, Unsubscribe} = this.props;
+        let {view} = this.state;
+
+        if (!view) {
+            return '';
+        }
+
         return (<div>
             Home abcaa {counter.current} caqwqasqw
             <button type="button" onClick={addCounter}>Thu 1 cai nha</button>

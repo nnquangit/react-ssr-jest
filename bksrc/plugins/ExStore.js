@@ -30,7 +30,7 @@ const storeUpdate = (store) => {
 const store = {
     state: observe(
         {},
-        (cur) => console.log('before'),
+        (cur) => {},
         (cur) => store.components.map(v => v.comp.setState(v.mapToProps(store)))
     ),
     actions: {}, mutations: {}, getters: {}, services: {},
