@@ -7,62 +7,105 @@ import {attachComponents} from "../plugins/ExStore";
 
 const subject = new Rx.Subject();
 
-function createStore(mods, plugins = {}) {
-    subject.data = {
-        state: {}, actions: {}, mutations: {}, getters: {},
-        services: {},
-        plugins: [
-            (_store) => _store.subscribe((_state) => console.log('LOG ', _state)),
-            ...plugins
-        ]
-    }
-
-    attMod(mods)
-
-    subject.data.plugins.map(plugin => plugin(subject))
+function getStore() {
+    return subject
 }
 
+function getState() {
+    const _store = getStore();
+    const _data = _store.data;
 
-function attMod(mods) {
-    const _store = subject.data;
-    Object.keys(mods).map((key) => {
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use getState";
+    }
 
-        // const _state = new Proxy(_store.state[key], {
-        //     get: (obj, prop) => obj[prop],
-        //     set: (obj, prop, value) => {
-        //         obj[prop] = value
-        //         // subject.next({..._store.state})
-        //         // console.log('Logger', {..._state});
-        //         return true;
-        //     }
-        // })
+    return _data.state;
+}
 
-        if (mods[key].mutations) {
-            Object.keys(mods[key].mutations).map(k => {
-                _store.mutations[k] = (payload) => {
-                    mods[key].mutations[k](_store.state[key], payload)
-                    subject.next(JSON.parse(JSON.stringify(_store.state)))
+function getStateCapture() {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use getStateCapture";
+    }
+
+    return JSON.parse(JSON.stringify(_data.state));
+}
+
+function createStore(mods, plugins = []) {
+    const _store = getStore();
+
+    _store.data = {
+        state: {}, actions: {}, mutations: {}, getters: {},
+        services: {}, plugins: []
+    }
+
+    if (plugins.length) {
+        _store.data.plugins = [..._store.data.plugins, ...plugins]
+    }
+
+    _store.getState = getState;
+    _store.getStateCapture = getStateCapture;
+    _store.attachModdules = attachModdules;
+    _store.attachServices = attachServices;
+
+    _store.attachModdules(mods)
+
+    _store.data.plugins.map(plugin => plugin(_store))
+
+    return _store;
+}
+
+function attachModdules(modules) {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use attachModdules";
+    }
+
+    Object.keys(modules).map((module) => {
+
+        _data.state[module] = {...modules[module].state};
+
+        if (modules[module].mutations) {
+            Object.keys(modules[module].mutations).map(k => {
+                _data.mutations[k] = (payload) => {
+                    modules[module].mutations[k](_data.state[module], payload)
+                    subject.next({mutation: k, state: _store.getStateCapture()})
                 }
             })
         }
-        if (mods[key].getters) {
-            Object.keys(mods[key].getters).map(k => {
-                _store.getters[k] = (payload) => mods[key].getters[k](
-                    {..._store.state[key]},
+        if (modules[module].getters) {
+            Object.keys(modules[module].getters).map(k => {
+                _data.getters[k] = (payload) => modules[module].getters[k](
+                    {..._data.state[module]},
                     payload
                 )
             })
         }
-        if (mods[key].actions) {
-            Object.keys(mods[key].actions).map(k => {
-                _store.actions[k] = (payload) => mods[key].actions[k]({
-                    commit: (mutation, payloads) => _store.mutations[mutation](payloads),
-                    state: {..._store.state[key]},
-                    rootState: {..._store, state: JSON.parse(JSON.stringify(_store.state))}
+        if (modules[module].actions) {
+            Object.keys(modules[module].actions).map(k => {
+                _data.actions[k] = (payload) => modules[module].actions[k]({
+                    commit: (mutation, payloads) => _data.mutations[mutation](payloads),
+                    state: {..._data.state[module]},
+                    rootState: {..._data, state: _store.getStateCapture()}
                 }, payload)
             })
         }
     })
+}
+
+function attachServices(services) {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use attachServices";
+    }
+
+    Object.assign(_data.services, services)
 }
 
 createStore({
@@ -88,41 +131,43 @@ createStore({
             'AUTH_MORE': (state) => state.more = state.more + 1
         }
     }
-}, [
-    (_store) => {
-        Object.assign(_store.data.state, {counter: {current: 20, more: 0}, auth: {auth: 20, more: 0}})
-        _store.subscribe((_state) => console.log('Saved !', _state))
+}).attachServices({
+    $api: {
+        get: (url) => console.log('$api get ', url),
+        post: (url, data) => console.log('$api post ', url, data),
     }
-])
+})
 
-subject.data.actions.addCounter();
-subject.data.actions.addMore();
+getStore().data.actions.addCounter();
+getStore().data.actions.addMore();
 
-subject.data.actions.authCounter();
-subject.data.actions.authMore();
+getStore().data.actions.authCounter();
+getStore().data.actions.authMore();
 
-subject.data.actions.addCounter();
-subject.data.actions.addMore();
+getStore().data.actions.addCounter();
+getStore().data.actions.addMore();
 
-subject.data.actions.authCounter();
-subject.data.actions.authMore();
+getStore().data.actions.authCounter();
+getStore().data.actions.authMore();
 
 const connect = (mapToProps = {}) => {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use connect";
+    }
+
     return (WrappedComponent) => {
         return withRouter(class extends React.Component {
             constructor(props) {
                 super(props);
+                this.state = mapToProps(_data)
+                this.trigger = _store.subscribe((msg) => this.setState(mapToProps(_data)))
+            }
 
-                // const router = {match, location, history} = this.props
-                // attachServices({router})
-
-                this.state = mapToProps(subject.data)
-
-                this.trigger = subject.subscribe((newstate) => {
-                    console.log('Local component')
-                    this.setState(mapToProps(subject.data))
-                })
-                // attachComponents(this, mapToProps);
+            componentWillUnmount() {
+                this.trigger.unsubscribe()
             }
 
             render() {
