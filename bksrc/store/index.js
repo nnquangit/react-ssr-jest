@@ -1,12 +1,8 @@
 import React from 'react';
-import {makeStore} from '../plugins/ExStore'
+import {createStore as makeStore} from 'exstore'
 import auth from './auth';
 import counter from './counter';
 
-export function createStore(init) {
-    const store = makeStore(init);
-
-    store.attachModules({auth, counter})
-
-    return store
+export function createStore(services, plugins) {
+    return makeStore({auth, counter}, services, plugins);
 }

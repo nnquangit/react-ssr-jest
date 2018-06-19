@@ -12,7 +12,7 @@ const actions = {
     signout: ({commit}) => commit(define.SIGNOUT)
 }
 
-const mutations = {
+const events = {
     [define.SIGNIN]: (state, user) => Object.assign(state, {isLoggedIn: true, user}),
     [define.SIGNOUT]: (state) => Object.assign(state, {isLoggedIn: false, user: {}})
 }
