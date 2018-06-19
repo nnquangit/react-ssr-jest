@@ -6,7 +6,7 @@
   "scripts": {
     "client": "webpack-dev-server --inline --progress --hot --config webpack.client.js",
     "start": "node server",
-    "build": "rimraf public && npm run build:client && npm run build:server",
+    "build": "npm run build:client && npm run build:server",
     "build:client": "cross-env NODE_ENV=production webpack --config webpack.client.js --progress --hide-modules",
     "build:server": "cross-env NODE_ENV=production webpack --config webpack.server.js --progress --hide-modules"
   },
@@ -27,6 +27,7 @@
     "connected-react-router": "^4.3.0",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "exstore": "^1.0.0",
     "history": "^4.7.2",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
@@ -60,6 +61,7 @@
     "postcss-loader": "^2.1.5",
     "react-hot-loader": "^4.3.3",
     "rimraf": "^2.6.2",
+    "ssr-plugin": "^1.0.0",
     "style-loader": "^0.21.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "vue-loader": "^15.2.4",

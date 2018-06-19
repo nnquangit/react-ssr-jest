@@ -1,7 +1,7 @@
 const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const nodeExternals = require('webpack-node-externals')
-const {SSRServerPlugin} = require('./plugin')
+const {SSRServerPlugin} = require('ssr-plugin')
 
 const resolve = (file) => path.resolve(__dirname, file)
 
@@ -24,16 +24,9 @@ module.exports = {
     externals: nodeExternals({whitelist: /\.css$/}),
     module: {
         rules: [
-            {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {hotReload: true}
-            },
-            {
-                test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader?cacheDirectory',
-            },
+            {test: /\.(css|less|scss|sass|styl)$/, use: 'ignore-loader'},
+            {test: /\.vue$/, loader: 'vue-loader', options: {hotReload: true}},
+            {test: /\.(js|jsx)$/, exclude: /node_modules/, loader: 'babel-loader',},
         ]
     },
     plugins: [
