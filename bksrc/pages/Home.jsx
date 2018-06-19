@@ -1,9 +1,8 @@
 import React from 'react';
-import * as Rx from "rxjs/index";
+import * as Rx from "rxjs";
 import {withRouter} from "react-router";
 import PropTypes from 'prop-types';
 import {attachComponents} from "../plugins/ExStore";
-
 
 const subject = new Rx.Subject();
 
@@ -33,11 +32,25 @@ function getStateCapture() {
     return JSON.parse(JSON.stringify(_data.state));
 }
 
+function replaceState(state) {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (!_store.data) {
+        throw "Store did not created ! Run createStore before use replaceState";
+    }
+
+    _data.state = {...state}
+    subject.next({event: 'state:replace', state: _store.getStateCapture()})
+
+    return _store;
+}
+
 function createStore(mods, plugins = []) {
     const _store = getStore();
 
     _store.data = {
-        state: {}, actions: {}, mutations: {}, getters: {},
+        state: {}, actions: {}, events: {}, getters: {},
         services: {}, plugins: []
     }
 
@@ -47,6 +60,7 @@ function createStore(mods, plugins = []) {
 
     _store.getState = getState;
     _store.getStateCapture = getStateCapture;
+    _store.replaceState = replaceState;
     _store.attachModdules = attachModdules;
     _store.attachServices = attachServices;
 
@@ -69,11 +83,11 @@ function attachModdules(modules) {
 
         _data.state[module] = {...modules[module].state};
 
-        if (modules[module].mutations) {
-            Object.keys(modules[module].mutations).map(k => {
-                _data.mutations[k] = (payload) => {
-                    modules[module].mutations[k](_data.state[module], payload)
-                    subject.next({mutation: k, state: _store.getStateCapture()})
+        if (modules[module].events) {
+            Object.keys(modules[module].events).map(event => {
+                _data.events[event] = (payload) => {
+                    modules[module].events[event](_data.state[module], payload)
+                    subject.next({event: event, state: _store.getStateCapture()})
                 }
             })
         }
@@ -88,13 +102,15 @@ function attachModdules(modules) {
         if (modules[module].actions) {
             Object.keys(modules[module].actions).map(k => {
                 _data.actions[k] = (payload) => modules[module].actions[k]({
-                    commit: (mutation, payloads) => _data.mutations[mutation](payloads),
+                    commit: (event, payloads) => _data.events[event](payloads),
                     state: {..._data.state[module]},
                     rootState: {..._data, state: _store.getStateCapture()}
                 }, payload)
             })
         }
     })
+
+    return _store;
 }
 
 function attachServices(services) {
@@ -106,6 +122,8 @@ function attachServices(services) {
     }
 
     Object.assign(_data.services, services)
+
+    return _store;
 }
 
 createStore({
@@ -115,7 +133,7 @@ createStore({
             addCounter: ({state, commit}) => commit('DEMO_ADD'),
             addMore: ({state, commit}) => commit('DEMO_MORE')
         },
-        mutations: {
+        events: {
             'DEMO_ADD': (state) => state.current = state.current + 1,
             'DEMO_MORE': (state) => state.more = state.more + 1
         }
@@ -126,17 +144,27 @@ createStore({
             authCounter: ({state, commit}) => commit('AUTH_ADD'),
             authMore: ({state, commit}) => commit('AUTH_MORE')
         },
-        mutations: {
+        events: {
             'AUTH_ADD': (state) => state.auth = state.auth + 1,
             'AUTH_MORE': (state) => state.more = state.more + 1
         }
     }
-}).attachServices({
+}, [
+    (_store) => _store.data.state = {counter: {current: 15, more: 0}, auth: {auth: 15, more: 0}},
+    (_store) => _store.subscribe((msg) => console.log(msg))
+]).attachServices({
     $api: {
         get: (url) => console.log('$api get ', url),
         post: (url, data) => console.log('$api post ', url, data),
     }
 })
+
+setTimeout(() => {
+    replaceState({
+        counter: {current: 20, more: 0},
+        auth: {auth: 20, more: 0}
+    })
+}, 10000)
 
 getStore().data.actions.addCounter();
 getStore().data.actions.addMore();
