@@ -8,6 +8,11 @@
     </head>
     <body>
         <div id="app"><%-html%></div>
+        <% if (state) { %>
+        <script type="text/javascript">
+            window.__INITIAL_STATE__ = <%-state%>;
+        </script>
+        <% } %>
         <% manifest.js.forEach(function(file){ %>
         <script type="text/javascript" src="<%-manifest.publicPath+file%>"></script>
         <% }); %>

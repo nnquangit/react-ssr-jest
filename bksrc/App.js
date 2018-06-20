@@ -8,10 +8,11 @@ export const App = withRouter(class extends React.Component {
     constructor(props) {
         super(props);
         const {location, history} = props
+        getStore().attachServices({$history: history})
         getStore().attachPlugins([(_store) => {
-            _store.data.state['$router'] = {location, history}
-            _store.data.state['$router'].history.listen((location, action) => {
-                _store.data.state['$router'] = {location, history}
+            _store.data.state['router'] = {location}
+            history.listen((location, action) => {
+                _store.data.state['router'] = {location}
             })
         }])
     }

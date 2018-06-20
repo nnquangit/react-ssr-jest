@@ -1,30 +1,20 @@
 import React from 'react';
-// import {connectReact as connect} from "../plugins/exstore";
+import {connectReact as connect} from "../plugins/exstore";
 
-export class Home extends React.Component {
+class HomePage extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        return (<div>Home</div>)
+        let {currentCounter, addCounter} = this.props;
+
+        return (<div>
+            Home abcaa {currentCounter()} caqwqasqw
+            <button type="button" onClick={addCounter}>Thu 1 cai nha</button>
+        </div>)
     }
 }
 
-// class HomePage extends React.Component {
-//     constructor(props) {
-//         super(props);
-//     }
-//
-//     render() {
-//         let {currentCounter, addCounter} = this.props;
-//
-//         return (<div>
-//             Home abcaa {currentCounter()} caqwqasqw
-//             <button type="button" onClick={addCounter}>Thu 1 cai nha</button>
-//         </div>)
-//     }
-// }
-//
-// export const Home = connect(({getters, actions}) => ({...getters, ...actions}))(HomePage)
-//
+export const Home = connect(({getters, actions}) => ({...getters, ...actions}))(HomePage)
+
