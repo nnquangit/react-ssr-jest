@@ -126,11 +126,11 @@ export const connectReact = (mapToProps = {}) => {
             constructor(props) {
                 super(props);
                 this.state = mapToProps(_data)
-                this.trigger = _store.subscribe((msg) => this.setState(mapToProps(_data)))
+                this.subscribe = _store.subscribe((msg) => this.setState(mapToProps(_data)))
             }
 
             componentWillUnmount() {
-                this.trigger.unsubscribe()
+                this.subscribe.unsubscribe()
             }
 
             render() {

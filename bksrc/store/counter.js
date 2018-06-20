@@ -9,7 +9,7 @@ const actions = {
 }
 
 const mutations = {
-    [define.ADD]: (state) => state.current = state.current + 1
+    [define.ADD]: (state) => state.current += 1
 }
 
 const getters = {

@@ -13,23 +13,22 @@ const $api = createApi(store)
 store.attachServices({$api, $cookies})
 store.attachPlugins([
     (_store) => _store.data.state = window.__INITIAL_STATE__,
-    (_store) => {
-        let saved = localStorage.getItem('sharetab');
-        if (saved) {
-            _store.data.state = JSON.parse(saved)
-        }
-        _store.subscribe((msg) => localStorage.setItem('sharetab', JSON.stringify(_store.data.state)))
-    }
 ])
 
-const render = () => {
-    ReactDOM.hydrate(<Router>
-        <App/>
-    </Router>, document.getElementById('app'));
+const render = (Main) => {
+    ReactDOM.hydrate(<Router><Main/></Router>, document.getElementById('app'));
 }
 
-render()
+render(App)
 
 if (module.hot) {
-    module.hot.accept()
+    module.hot.accept('./App', function () {
+        const {App: newApp} = require('./App')
+        render(newApp)
+    });
+    module.hot.accept('./store', function () {
+        const oldstate = store.getStateCapture()
+        const {createStore} = require('./store');
+        createStore().replaceState(oldstate)
+    });
 }

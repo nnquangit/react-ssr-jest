@@ -10,7 +10,7 @@ class HomePage extends React.Component {
         let {currentCounter, addCounter} = this.props;
 
         return (<div>
-            Home abcaa {currentCounter()} caqwqasqw
+            Home a b caba{currentCounter()}
             <button type="button" onClick={addCounter}>Thu 1 cai nha</button>
         </div>)
     }
