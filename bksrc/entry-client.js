@@ -1,20 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BrowserRouter from 'react-router-dom/BrowserRouter';
+import {BrowserRouter as Router} from 'react-router-dom';
 import {App} from './App'
 import {createStore} from './store';
+import {createApi} from "./services/api";
 
-createStore()
+const $api = createApi()
+createStore([], {$api})
 
-const render = (Main) => {
-    ReactDOM.hydrate(<BrowserRouter><Main/></BrowserRouter>, document.getElementById('app'));
+const render = () => {
+    ReactDOM.hydrate(<Router>
+        <App/>
+    </Router>, document.getElementById('app'));
 }
 
-render(App)
+render()
 
 if (module.hot) {
-    module.hot.accept('./App', () => {
-        const {App: nextApp} = require('./App')
-        render(nextApp)
-    })
+    module.hot.accept()
 }

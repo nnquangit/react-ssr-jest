@@ -8,7 +8,7 @@ const actions = {
     addCounter: ({commit}) => commit(define.ADD)
 }
 
-const events = {
+const mutations = {
     [define.ADD]: (state) => state.current = state.current + 1
 }
 

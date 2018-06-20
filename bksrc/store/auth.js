@@ -3,16 +3,14 @@ const define = {
     SIGNOUT: 'AUTH_SIGNOUT'
 }
 
-const state = {
-    isLoggedIn: false, user: {}
-}
+const state = {isLoggedIn: false, user: {}}
 
 const actions = {
-    signin: ({commit, state}, user) => commit(define.SIGNIN, user),
+    signin: ({commit, state, rootState: {api}}, user) => commit(define.SIGNIN, user),
     signout: ({commit}) => commit(define.SIGNOUT)
 }
 
-const events = {
+const mutations = {
     [define.SIGNIN]: (state, user) => Object.assign(state, {isLoggedIn: true, user}),
     [define.SIGNOUT]: (state) => Object.assign(state, {isLoggedIn: false, user: {}})
 }

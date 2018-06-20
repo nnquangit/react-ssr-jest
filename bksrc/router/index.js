@@ -4,12 +4,12 @@ import {Home, Master, Protected, ServerRender} from "../pages";
 export function createRouter() {
     return [
         {
-            path: "", component: Master, routes: [
-                {path: "/", component: Home},
+            component: Master,
+            routes: [
+                {path: "/", component: Home, exact: true},
                 {path: "/protected", component: Protected},
                 {path: "/serverrender", component: ServerRender}
             ]
-        },
-
+        }
     ]
 }
