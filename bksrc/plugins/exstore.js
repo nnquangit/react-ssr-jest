@@ -1,21 +1,22 @@
 import * as Rx from "rxjs";
 import React from 'react';
 
-const subject = new Rx.Subject();
-subject.data = {
+const store = new Rx.Subject();
+store.data = {
     state: {}, actions: {}, mutations: {}, getters: {},
     services: {}, plugins: []
 }
-subject.getState = getState;
-subject.getStateCapture = getStateCapture;
-subject.replaceState = replaceState;
-subject.attachModules = attachModules;
-subject.getServices = getServices;
-subject.attachServices = attachServices;
-subject.attachPlugins = attachPlugins;
+store.getState = getState;
+store.getStateCapture = getStateCapture;
+store.replaceState = replaceState;
+store.attachModules = attachModules;
+store.getServices = getServices;
+store.attachServices = attachServices;
+store.attachPlugins = attachPlugins;
+store.runMiddlewares = runMiddlewares;
 
 export function getStore() {
-    return subject
+    return store
 }
 
 export function getState() {
@@ -31,12 +32,12 @@ export function replaceState(state) {
     const _data = _store.data;
 
     _data.state = {...state}
-    subject.next({mutation: 'state:replace', state: _store.getStateCapture()})
+    store.next({mutation: 'state:replace', state: _store.getStateCapture()})
 
     return _store;
 }
 
-export function createStore(mods, services, plugins = []) {
+export function createStore(mods, services, plugins = [], middlewares = []) {
     const _store = getStore();
 
     _store.attachModules(mods)
@@ -49,7 +50,22 @@ export function createStore(mods, services, plugins = []) {
         _store.attachPlugins(plugins)
     }
 
+    if (middlewares.length) {
+        _store.runMiddlewares(middlewares)()
+    }
+
     return _store;
+}
+
+export function runMiddlewares(middlewares) {
+    if (!middlewares.length) {
+        return
+    }
+
+    return () => middlewares[0](getStore(), middlewares[1]
+        ? runMiddlewares(middlewares.slice(1))
+        : () => ({})
+    )
 }
 
 export function attachModules(modules) {
@@ -64,7 +80,7 @@ export function attachModules(modules) {
             Object.keys(modules[module].mutations).map(mutation => {
                 _data.mutations[mutation] = (payload) => {
                     modules[module].mutations[mutation](_data.state[module], payload)
-                    subject.next({mutation: mutation, state: _store.getStateCapture()})
+                    store.next({mutation: mutation, state: _store.getStateCapture()})
                 }
             })
         }
