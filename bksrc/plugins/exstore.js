@@ -150,8 +150,8 @@ export const connectReact = (mapToProps = {}) => {
             }
 
             render() {
-                return <WrappedComponent {...this.state}/>;
+                return <WrappedComponent {...this.state} {...this.props}/>;
             }
-        };
+        }
     }
 }

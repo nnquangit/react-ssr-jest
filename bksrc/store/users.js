@@ -11,9 +11,9 @@ const state = {
 }
 
 const actions = {
-    getUsers({commit, state, rootState: {api}}, page = 1) {
+    getUsers({commit, state, rootState: {services: {$api}}}, page = 1) {
         commit(define.list.FETCH)
-        return api.get('https://randomuser.me/api/?results=10&nat=us&page=' + page)
+        return $api.get('https://randomuser.me/api/?results=10&nat=us&page=' + page)
             .then(res => {
                 commit(define.list.FETCH_SUCCESS, res)
                 return res
@@ -32,8 +32,8 @@ const mutations = {
 }
 
 const getters = {
-    usersList: (state) => state.list.results,
-    usersListInfo: (state) => state.list.info
+    usersList: (state) => state.list.results || [],
+    usersListInfo: (state) => state.list.info || {}
 }
 
 export default {define, state, actions, mutations, getters}

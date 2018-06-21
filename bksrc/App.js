@@ -3,6 +3,7 @@ import {renderRoutes} from 'react-router-config';
 import {withRouter} from 'react-router'
 import {createRouter} from './router';
 import {getStore} from './plugins/exstore'
+import './assets/app.css'
 
 export const App = withRouter(class extends React.Component {
     constructor(props) {

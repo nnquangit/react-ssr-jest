@@ -68,10 +68,9 @@ reactCompiler.watch({}, (err, stats) => console.log("Webpack server watching..."
 app.use(function (req, res, next) {
     app.get('*', (req, res) => {
         Promise.all([clientPromise, reactPromise]).then(() => {
-            serverBundle.createApp({req, res}).then(data => {
-                console.log(data)
-                res.render('index', {...data, manifest})
-            })
+            serverBundle
+                .createApp({req, res})
+                .then(data => res.render('index', {...data, manifest}))
         })
     })
     next();
