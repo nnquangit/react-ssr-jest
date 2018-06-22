@@ -18,7 +18,9 @@ export class Master extends React.Component {
                     </div>
                 </div>
             </nav>
-            {renderRoutes(route.routes)}
+            <div className="my-3 container">
+                {renderRoutes(route.routes)}
+            </div>
         </div>)
     }
 }

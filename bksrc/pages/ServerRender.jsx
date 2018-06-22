@@ -1,41 +1,39 @@
-import React from 'react';
-import {connectReact as connect} from "../plugins/exstore";
-import {Loader, Pagination, UserInfo} from "../components";
-import {hocGlobal} from "../hocGlobal";
+import React from 'react'
+import {connectReact as connect} from "../plugins/exstore"
+import {Loader, Pagination, UserInfo} from "../components"
+import {hocGlobal} from "../hocGlobal"
 
 const ServerRender = connect(({state, getters, actions}) => ({
-    ...getters,
-    ...actions,
+    fetchData: actions.getUsers,
+    result: getters.usersList(),
     path: state.router.location.pathname,
     page: state.router.location.query.page || 1
 }))(hocGlobal(class extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     componentDidMount() {
-        let {usersList, getUsers, page} = this.props;
-        let {loaded} = usersList()
+        let {fetchData, page, result} = this.props
 
-        if (!loaded) {
-            getUsers(page)
+        if (!result.loaded) {
+            fetchData(page)
         }
     }
 
     componentWillUpdate(nextProps, nextState) {
-        let {getUsers} = nextProps;
+        let {fetchData} = nextProps
 
         if (this.props.page !== nextProps.page) {
-            getUsers(nextProps.page)
+            fetchData(nextProps.page)
         }
     }
 
     render() {
-        let {usersList, history, path} = this.props;
-        let {results: data, info, fetch} = usersList()
-        let {page = 1, total = 100, perpage = 10} = info
+        let {result, history, path} = this.props
+        let {results: data = [], info: {page = 1, total = 100, perpage = 10}, fetch} = result
 
-        return (<div className="my-3 container">
+        return (<div>
             {fetch && (<Loader/>)}
             <Pagination
                 page={page} total={total} perpage={perpage}
@@ -48,6 +46,6 @@ const ServerRender = connect(({state, getters, actions}) => ({
 ServerRender.asyncData = ({state, actions}) => {
     let page = state.router.location.query.page || 1
     return actions.getUsers(page)
-};
+}
 
 export {ServerRender}
