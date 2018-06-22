@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import {matchRoutes} from 'react-router-config';
-import {createStore} from './store';
+import {createStore, routerPluginServer} from './store';
+
 import {createApi} from './services/api';
 import {App} from './App'
 import {createCookies} from "./services/cookies";
@@ -13,12 +14,16 @@ export function createApp({req, res}) {
     const $cookies = createCookies({req, res})
     const $api = createApi(store)
     store.attachServices({$api, $cookies})
+    store.attachPlugins([
+        routerPluginServer({req, res}),
+    ])
 
     const routes = createRouter()
-    const branch = matchRoutes(routes, req.url);
+    const branch = matchRoutes(routes, req.path);
+
     const promises = branch.map((route) => {
         let asyncData = route.route.component.asyncData;
-        return asyncData ? asyncData({store, route}) : Promise.resolve(null);
+        return asyncData ? asyncData(store.data) : Promise.resolve(null);
     });
 
     return new Promise((resolve, reject) => {

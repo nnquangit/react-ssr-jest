@@ -4,15 +4,21 @@ import React from 'react';
 const store = new Rx.Subject();
 store.data = {
     state: {}, actions: {}, mutations: {}, getters: {},
-    services: {}, plugins: []
+    services: {}, plugins: [], middlewares: []
 }
+store.attachModules = attachModules;
+//State
 store.getState = getState;
 store.getStateCapture = getStateCapture;
 store.replaceState = replaceState;
-store.attachModules = attachModules;
+//Services
 store.getServices = getServices;
 store.attachServices = attachServices;
+//Plugins
 store.attachPlugins = attachPlugins;
+//Middlewares
+store.attachMiddlewares = attachMiddlewares;
+store.applyMiddlewares = applyMiddlewares;
 store.runMiddlewares = runMiddlewares;
 
 export function getStore() {
@@ -37,24 +43,33 @@ export function replaceState(state) {
     return _store;
 }
 
-export function createStore(mods, services, plugins = [], middlewares = []) {
+export function createStore({modules, services, plugins, middlewares}) {
     const _store = getStore();
 
-    _store.attachModules(mods)
+    if (modules) {
+        _store.attachModules(modules)
+    }
 
-    if (typeof services === 'object') {
+    if (services) {
         _store.attachServices(services)
     }
 
-    if (plugins.length) {
+    if (plugins) {
         _store.attachPlugins(plugins)
     }
 
-    if (middlewares.length) {
-        _store.runMiddlewares(middlewares)()
+    if (middlewares) {
+        _store.attachMiddlewares(middlewares)
     }
 
     return _store;
+}
+
+export function applyMiddlewares() {
+    const _store = getStore();
+    const _data = _store.data;
+
+    _store.runMiddlewares(_data.middlewares)
 }
 
 export function runMiddlewares(middlewares) {
@@ -133,7 +148,18 @@ export function attachPlugins(plugins) {
     return _store;
 }
 
-export const connectReact = (mapToProps = {}) => {
+export function attachMiddlewares(middlewares) {
+    const _store = getStore();
+    const _data = _store.data;
+
+    if (middlewares.length) {
+        _data.middlewares = [...middlewares, ..._data.middlewares]
+    }
+
+    return _store;
+}
+
+export function connectReact(mapToProps = {}) {
     const _store = getStore();
     const _data = _store.data;
 
@@ -150,7 +176,7 @@ export const connectReact = (mapToProps = {}) => {
             }
 
             render() {
-                return <WrappedComponent {...this.state} {...this.props}/>;
+                return <WrappedComponent {...this.props} {...this.state}/>;
             }
         }
     }

@@ -8,7 +8,7 @@ export class Master extends React.Component {
         return (<div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container">
-                    <a className="navbar-brand" href="#">Brand</a>
+                    <Link className="navbar-brand" to="/">Brand</Link>
                     <div className="mr-auto">
                         <div className="navbar-nav">
                             <Link className="nav-item nav-link" to="/">Home</Link>

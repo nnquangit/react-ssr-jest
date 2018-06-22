@@ -1,6 +1,7 @@
 import React from 'react';
+import {hocGlobal} from '../hocGlobal';
 
-export class Home extends React.Component {
+const Home = hocGlobal(class extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -18,4 +19,6 @@ export class Home extends React.Component {
             <a className="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
         </div>)
     }
-}
+})
+
+export {Home}

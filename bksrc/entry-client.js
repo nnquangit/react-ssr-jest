@@ -1,22 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {Router} from 'react-router';
 import {App} from './App'
-import {createStore} from './store';
+import {createStore, logPlugin, routerPluginClient, ssrPlugin} from './store';
 import {createApi} from "./services/api";
 import {createCookies} from "./services/cookies";
+import {createBrowserHistory} from "history";
 
 const store = createStore()
 const $cookies = createCookies()
 const $api = createApi(store)
+const history = createBrowserHistory();
 
 store.attachServices({$api, $cookies})
 store.attachPlugins([
-    (_store) => _store.data.state = window.__INITIAL_STATE__,
+    logPlugin(),
+    ssrPlugin(),
+    routerPluginClient(history)
 ])
 
 const render = (Main) => {
-    ReactDOM.hydrate(<Router><Main/></Router>, document.getElementById('app'));
+    ReactDOM.hydrate(<Router history={history}><Main/></Router>, document.getElementById('app'));
 }
 
 render(App)

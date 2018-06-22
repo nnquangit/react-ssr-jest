@@ -10,6 +10,7 @@ const app = express();
 const webpack = require('webpack')
 const ReactDOMServer = require('react-dom/server')
 const ejs = require('ejs');
+const favicon = require('serve-favicon')
 const resolve = (file) => path.resolve(__dirname, file)
 const readFile = (output, file) => output.readFileSync(file, 'utf-8')
 
@@ -18,6 +19,7 @@ const serve = (path, cache) => express.static(resolve(path), {maxAge: 0})
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
+app.use(favicon('./static/favicon.ico'))
 app.use('/static', serve('./static', true))
 
 const clientConfig = require('./webpack.client.js');

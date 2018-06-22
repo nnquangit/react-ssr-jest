@@ -7,7 +7,7 @@ export const define = {
 }
 
 const state = {
-    list: {fetch: false, results: [], info: {}}
+    list: {fetch: false, results: [], info: {}, loaded: false}
 }
 
 const actions = {
@@ -27,13 +27,12 @@ const actions = {
 
 const mutations = {
     [define.list.FETCH]: (state) => state.list.fetch = true,
-    [define.list.FETCH_SUCCESS]: (state, res) => state.list = {...res.data, fetch: false},
+    [define.list.FETCH_SUCCESS]: (state, res) => state.list = {...res.data, fetch: false, loaded: true},
     [define.list.FETCH_FAIL]: (state) => state.list.fetch = false
 }
 
 const getters = {
-    usersList: (state) => state.list.results || [],
-    usersListInfo: (state) => state.list.info || {}
+    usersList: (state) => state.list,
 }
 
 export default {define, state, actions, mutations, getters}

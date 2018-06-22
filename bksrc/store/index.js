@@ -4,6 +4,10 @@ import auth from './auth';
 import users from './users';
 import counter from './counter';
 
-export function createStore(...arg) {
-    return makeStore({auth, users, counter}, ...arg);
+export function createStore() {
+    return makeStore({
+        modules: {auth, users, counter}
+    });
 }
+
+export * from "./plugins"
