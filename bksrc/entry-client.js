@@ -1,18 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router} from 'react-router';
-import {App} from './App'
+import {createBrowserHistory} from "history";
 import {createStore, logPlugin, routerPluginClient, ssrPlugin} from './store';
+import {App} from './App'
 import {createApi} from "./services/api";
 import {createCookies} from "./services/cookies";
-import {createBrowserHistory} from "history";
+import {createFirebase} from "./services/firebase";
 
+const history = createBrowserHistory();
 const store = createStore()
 const $cookies = createCookies()
 const $api = createApi(store)
-const history = createBrowserHistory();
+const $firebase = createFirebase()
 
-store.attachServices({$api, $cookies})
+store.attachServices({$api, $cookies, $firebase})
 store.attachPlugins([
     logPlugin(),
     ssrPlugin(),

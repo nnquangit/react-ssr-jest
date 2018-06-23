@@ -1,5 +1,5 @@
 import React from "react";
-import {Home, Master, Protected, ServerRender} from "../pages";
+import {Home, Login, Master, Protected, ServerRender} from "../pages";
 
 export function createRouter() {
     return [
@@ -7,6 +7,7 @@ export function createRouter() {
             component: Master,
             routes: [
                 {path: "/", component: Home, exact: true},
+                {path: "/login", component: Login},
                 {path: "/protected", component: Protected},
                 {path: "/serverrender", component: ServerRender}
             ]

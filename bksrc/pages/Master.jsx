@@ -12,6 +12,7 @@ export class Master extends React.Component {
                     <div className="mr-auto">
                         <div className="navbar-nav">
                             <Link className="nav-item nav-link" to="/">Home</Link>
+                            <Link className="nav-item nav-link" to="/login">Login</Link>
                             <Link className="nav-item nav-link" to="/protected">Protected</Link>
                             <Link className="nav-item nav-link" to="/serverrender">ServerRender</Link>
                         </div>

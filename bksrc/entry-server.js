@@ -3,17 +3,19 @@ import ReactDOMServer from 'react-dom/server';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import {matchRoutes} from 'react-router-config';
 import {createStore, routerPluginServer} from './store';
-
-import {createApi} from './services/api';
 import {App} from './App'
+import {createApi} from './services/api';
 import {createCookies} from "./services/cookies";
+import {createFirebase} from "./services/firebase";
 import {createRouter} from './router';
 
 export function createApp({req, res}) {
     const store = createStore()
     const $cookies = createCookies({req, res})
     const $api = createApi(store)
-    store.attachServices({$api, $cookies})
+    const $firebase = createFirebase()
+
+    store.attachServices({$api, $cookies, $firebase})
     store.attachPlugins([
         routerPluginServer({req, res}),
     ])

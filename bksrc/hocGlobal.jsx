@@ -1,8 +1,9 @@
 import React from 'react';
 import qs from 'query-string'
+import {withRouter} from 'react-router'
 
 export const hocGlobal = (WrappedComponent) => {
-    return class extends React.Component {
+    return withRouter(class extends React.Component {
         constructor(props) {
             super(props);
         }
@@ -13,5 +14,5 @@ export const hocGlobal = (WrappedComponent) => {
 
             return <WrappedComponent {...this.props} location={newloc}/>;
         }
-    }
+    })
 }
