@@ -18,7 +18,18 @@ store.attachServices({$api, $cookies, $firebase})
 store.attachPlugins([
     logPlugin(),
     ssrPlugin(),
-    routerPluginClient(history)
+    routerPluginClient(history),
+    (_store) => {
+        let {$cookies} = _store.getServices()
+        let saved = $cookies.getItem('__auth');
+
+        if (saved) {
+            _store.replaceState({..._store.getState(), auth: JSON.parse(saved)})
+        }
+
+        _store.subscribe((msg) => $cookies.setItem('__auth', JSON.stringify(_store.getState().auth)))
+        console.log(_store.getState())
+    }
 ])
 
 const render = (Main) => {

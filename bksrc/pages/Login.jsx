@@ -1,53 +1,51 @@
 import React from 'react';
+import {NoSSR} from '../components';
 import {connectReact as connect} from "../plugins/exstore"
-import {hocGlobal} from '../hocGlobal';
 
-const Login = connect(({state, getters, actions, services}) => ({
-    ...actions,
-    ...services
-}))(hocGlobal(class extends React.Component {
+const Login = connect(({actions, services, getters}) => ({
+    ...actions, ...services, ...getters
+}))(class extends React.Component {
     constructor(props) {
         super(props)
         this.onLogin = this.onLogin.bind(this)
     }
 
     onLogin() {
-        let {$firebase} = this.props;
+        let {$firebase, signin} = this.props;
         let provider = new $firebase.auth.GoogleAuthProvider();
 
-        $firebase.auth().signInWithPopup(provider).then(function (result) {
-            console.log(result.user)
-        }).catch(function (error) {
-            console.log(error)
-        });
+        $firebase.auth().signInWithPopup(provider).then((result) => {
+            let user = result.user;
+            user.getIdToken().then(token => signin({
+                displayName: user.displayName,
+                email: user.email,
+                token
+            }))
+        }).catch((error) => console.log(error));
     }
 
     render() {
-        return (<div>
-            {/*<Loader/>*/}
+        let {signout, isLoggedIn, currentUser} = this.props;
 
-            <form>
-                <div className="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                           placeholder="Enter email"/>
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone
-                        else.
-                    </small>
-                </div>
-                <div className="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
-                </div>
-                <div className="form-group form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label className="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
-            <button type="button" className="btn btn-primary" onClick={this.onLogin}>Google</button>
+        return (<div>
+            <NoSSR>
+                {isLoggedIn() && (<div>
+                    Name: {currentUser().displayName}<br/>
+                    Email: {currentUser().email}
+                </div>)}
+            </NoSSR>
+            <div className="mt-3">
+                <NoSSR>
+                    {!isLoggedIn() && (<button type="button" className="btn btn-primary" onClick={this.onLogin}>
+                        Login
+                    </button>)}
+                    {isLoggedIn() && (<button type="button" className="btn btn-danger mr-3" onClick={signout}>
+                        Logout
+                    </button>)}
+                </NoSSR>
+            </div>
         </div>)
     }
-}))
+})
 
 export {Login}

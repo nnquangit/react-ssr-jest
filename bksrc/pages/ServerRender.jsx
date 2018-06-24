@@ -1,14 +1,13 @@
 import React from 'react'
 import {connectReact as connect} from "../plugins/exstore"
 import {Loader, Pagination, UserInfo} from "../components"
-import {hocGlobal} from "../hocGlobal"
 
 const ServerRender = connect(({state, getters, actions}) => ({
     fetchData: actions.getUsers,
     result: getters.usersList(),
     path: state.router.location.pathname,
     page: state.router.location.query.page || 1
-}))(hocGlobal(class extends React.Component {
+}))(class extends React.Component {
     constructor(props) {
         super(props)
     }
@@ -41,7 +40,7 @@ const ServerRender = connect(({state, getters, actions}) => ({
             {data.map((e, k) => (<UserInfo {...e} key={k}/>))}
         </div>)
     }
-}))
+})
 
 ServerRender.asyncData = ({state, actions}) => {
     let page = state.router.location.query.page || 1
