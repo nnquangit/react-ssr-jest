@@ -1,10 +1,14 @@
 import React from 'react';
+import {hocAuth} from "../hoc"
 
-export class Protected extends React.Component {
+const Protected = hocAuth(class extends React.Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return (<div>Protected</div>)
     }
-}
+})
+
+export {Protected}

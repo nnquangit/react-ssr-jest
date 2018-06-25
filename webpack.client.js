@@ -14,7 +14,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
 
 const config = {
-    entry: {app: resolve('./bksrc/entry-client.js')},
+    entry: {app: resolve('./src/entry-client.js')},
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : '#cheap-module-eval-source-map',
     devServer: {
@@ -73,7 +73,7 @@ const config = {
     resolve: {
         extensions: ['.js', '.jsx', '.json', '.vue'],
         alias: {
-            '@': resolve('./bksrc'),
+            '@': resolve('./src'),
             'vue$': 'vue/dist/vue.common.js'
         }
     },

@@ -1,14 +1,9 @@
-import React from 'react';
-import {renderRoutes} from 'react-router-config';
-import {createRouter} from './router';
-import './assets/app.css'
+import Vue from 'vue'
+import './app.css'
 
-export class App extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+Vue.config.productionTip = false
 
-    render() {
-        return renderRoutes(createRouter())
-    }
+export function rootApp(ssrContext) {
+    const app = new Vue({data: {title: 'abcds'}, template: `<div id="app">Hello World Vuejs {{title}}</div>`})
+    return {app}
 }

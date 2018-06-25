@@ -6,7 +6,7 @@ const define = {
 const state = {isLoggedIn: false, user: {}}
 
 const actions = {
-    signin: ({commit, state, rootState: {api}}, user) => commit(define.SIGNIN, user),
+    signin: ({commit, state}, user) => commit(define.SIGNIN, user),
     signout: ({commit}) => commit(define.SIGNOUT)
 }
 

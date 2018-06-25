@@ -2,10 +2,10 @@ import * as Rx from "rxjs";
 import React from 'react';
 
 const store = new Rx.Subject();
-store.data = {
+Object.assign(store, {
     state: {}, actions: {}, mutations: {}, getters: {},
     services: {}, plugins: [], middlewares: []
-}
+});
 store.attachModules = attachModules;
 //State
 store.getState = getState;
@@ -26,19 +26,18 @@ export function getStore() {
 }
 
 export function getState() {
-    return getStore().data.state;
+    return getStore().state;
 }
 
 export function getStateCapture() {
-    return JSON.parse(JSON.stringify(getStore().data.state));
+    return JSON.parse(JSON.stringify(getStore().state));
 }
 
 export function replaceState(state) {
     const _store = getStore();
-    const _data = _store.data;
 
-    _data.state = {...state}
-    store.next({mutation: 'state:replace', state: _store.getStateCapture()})
+    _store.state = {...state}
+    _store.next({mutation: 'state:replace', state: _store.getStateCapture()})
 
     return _store;
 }
@@ -67,9 +66,8 @@ export function createStore({modules, services, plugins, middlewares}) {
 
 export function applyMiddlewares() {
     const _store = getStore();
-    const _data = _store.data;
 
-    _store.runMiddlewares(_data.middlewares)
+    _store.runMiddlewares(_store.middlewares)
 }
 
 export function runMiddlewares(middlewares) {
@@ -85,34 +83,33 @@ export function runMiddlewares(middlewares) {
 
 export function attachModules(modules) {
     const _store = getStore();
-    const _data = _store.data;
 
     Object.keys(modules).map((module) => {
 
-        _data.state[module] = {...modules[module].state};
+        _store.state[module] = {...modules[module].state};
 
         if (modules[module].mutations) {
             Object.keys(modules[module].mutations).map(mutation => {
-                _data.mutations[mutation] = (payload) => {
-                    modules[module].mutations[mutation](_data.state[module], payload)
-                    store.next({mutation: mutation, state: _store.getStateCapture()})
+                _store.mutations[mutation] = (payload) => {
+                    modules[module].mutations[mutation](_store.state[module], payload)
+                    _store.next({mutation: mutation, state: _store.getStateCapture()})
                 }
             })
         }
         if (modules[module].getters) {
             Object.keys(modules[module].getters).map(k => {
-                _data.getters[k] = (payload) => modules[module].getters[k](
-                    {..._data.state[module]},
+                _store.getters[k] = (payload) => modules[module].getters[k](
+                    {..._store.state[module]},
                     payload
                 )
             })
         }
         if (modules[module].actions) {
             Object.keys(modules[module].actions).map(k => {
-                _data.actions[k] = (payload) => modules[module].actions[k]({
-                    commit: (mutation, payloads) => _data.mutations[mutation](payloads),
-                    state: {..._data.state[module]},
-                    rootState: {..._data, state: _store.getStateCapture()}
+                _store.actions[k] = (payload) => modules[module].actions[k]({
+                    store: _store,
+                    state: {..._store.state[module]},
+                    commit: (mutation, payloads) => _store.mutations[mutation](payloads)
                 }, payload)
             })
         }
@@ -121,26 +118,24 @@ export function attachModules(modules) {
     return _store;
 }
 
-export function getServices(services) {
-    return getStore().data.services;
+export function getServices() {
+    return getStore().services;
 }
 
 export function attachServices(services) {
     const _store = getStore();
-    const _data = _store.data;
 
-    Object.assign(_data.services, services)
+    Object.assign(_store.services, services)
 
     return _store;
 }
 
 export function attachPlugins(plugins) {
     const _store = getStore();
-    const _data = _store.data;
 
     if (plugins.length) {
         plugins.map(plugin => {
-            _data.plugins.push(plugin)
+            _store.plugins.push(plugin)
             plugin(_store)
         })
     }
@@ -150,10 +145,9 @@ export function attachPlugins(plugins) {
 
 export function attachMiddlewares(middlewares) {
     const _store = getStore();
-    const _data = _store.data;
 
     if (middlewares.length) {
-        _data.middlewares = [...middlewares, ..._data.middlewares]
+        _store.middlewares = [...middlewares, ..._store.middlewares]
     }
 
     return _store;
@@ -161,14 +155,13 @@ export function attachMiddlewares(middlewares) {
 
 export function connectReact(mapToProps = {}) {
     const _store = getStore();
-    const _data = _store.data;
 
     return (WrappedComponent) => {
         return class extends React.Component {
             constructor(props) {
                 super(props);
-                this.state = mapToProps(_data)
-                this.subscribe = _store.subscribe((msg) => this.setState(mapToProps(_data)))
+                this.state = mapToProps(_store)
+                this.subscribe = _store.subscribe((msg) => this.setState(mapToProps(_store)))
             }
 
             componentWillUnmount() {

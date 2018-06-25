@@ -11,7 +11,7 @@ const state = {
 }
 
 const actions = {
-    getUsers({commit, state, rootState: {services: {$api}}}, page = 1) {
+    getUsers({commit, state, store: {services: {$api}}}, page = 1) {
         commit(define.list.FETCH)
         return $api.get('https://randomuser.me/api/?results=10&nat=us&page=' + page)
             .then(res => {

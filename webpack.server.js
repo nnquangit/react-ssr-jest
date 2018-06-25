@@ -8,7 +8,7 @@ const resolve = (file) => path.resolve(__dirname, file)
 module.exports = {
     target: 'node',
     mode: 'production',
-    entry: resolve('./bksrc/entry-server.js'),
+    entry: resolve('./src/entry-server.js'),
     output: {
         path: path.resolve(__dirname, 'public'),
         filename: 'server-react-bundle.js',
@@ -17,7 +17,7 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx', '.json', '.vue'],
         alias: {
-            '@': resolve('./bksrc'),
+            '@': resolve('./src'),
             'vue$': 'vue/dist/vue.common.js'
         }
     },

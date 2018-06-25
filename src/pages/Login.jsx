@@ -2,30 +2,35 @@ import React from 'react';
 import {NoSSR} from '../components';
 import {connectReact as connect} from "../plugins/exstore"
 
-const Login = connect(({actions, services, getters}) => ({
-    ...actions, ...services, ...getters
+const Login = connect(store => ({
+    store,
+    location: store.getState().router.location
 }))(class extends React.Component {
     constructor(props) {
         super(props)
+        let rState = props.location.state
+        this.state = {redirect: (rState && rState.referrer) ? rState.referrer.pathname : '/'}
         this.onLogin = this.onLogin.bind(this)
     }
 
     onLogin() {
-        let {$firebase, signin} = this.props;
+        let {redirect} = this.state;
+        let {history} = this.props;
+        let {signin} = this.props.store.actions;
+        let {$firebase} = this.props.store.services;
         let provider = new $firebase.auth.GoogleAuthProvider();
 
         $firebase.auth().signInWithPopup(provider).then((result) => {
             let user = result.user;
-            user.getIdToken().then(token => signin({
-                displayName: user.displayName,
-                email: user.email,
-                token
-            }))
+            user.getIdToken()
+                .then(token => signin({displayName: user.displayName, email: user.email, token}))
+                .then(() => history.push(redirect))
         }).catch((error) => console.log(error));
     }
 
     render() {
-        let {signout, isLoggedIn, currentUser} = this.props;
+        let {signout} = this.props.store.actions;
+        let {isLoggedIn, currentUser} = this.props.store.getters;
 
         return (<div>
             <NoSSR>
