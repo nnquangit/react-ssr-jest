@@ -1,6 +1,6 @@
 import React from 'react';
 import {NoSSR} from '../components';
-import {connectReact as connect} from "../plugins/exstore"
+import {connectReact as connect} from "exstore"
 import {Redirect} from 'react-router-dom';
 
 export const hocAuth = (WrappedComponent) => {

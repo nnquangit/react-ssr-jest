@@ -1,5 +1,5 @@
 import React from 'react'
-import {connectReact as connect} from "../plugins/exstore"
+import {connectReact as connect} from "exstore"
 import {UserList} from "../components"
 
 const ServerRender = connect(({state, getters, actions}) => ({

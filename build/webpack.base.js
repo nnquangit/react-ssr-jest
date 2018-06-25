@@ -1,7 +1,3 @@
-/*
-    ./webpack.config.js
-*/
-
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -12,20 +8,29 @@ const {SSRClientPlugin} = require('ssr-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = (file) => path.resolve(__dirname, file)
+const postcssLoader = {
+    loader: 'postcss-loader',
+    options: {
+        plugins: [
+            require('postcss-import'),
+            require('autoprefixer')({
+                browsers: [
+                    'ie >= 10', 'ie_mob >= 10', 'ff >= 30',
+                    'chrome >= 21', 'safari >= 6', 'opera >= 23',
+                    'ios >= 7', 'android >= 4.4', 'bb >= 10', 'firefox 47'
+                ]
+            }),
+        ]
+    }
+}
+const cssLoader = {
+    loader: 'css-loader',
+    options: {minimize: {modules: true, discardComments: {removeAll: true}}}
+}
 
-const config = {
-    entry: {app: resolve('./src/entry-client.js')},
+const config = (opt = {}) => ({
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : '#cheap-module-eval-source-map',
-    devServer: {
-        open: false,
-        index: "index.html",
-        openPage: '',
-        contentBase: './client',
-        compress: true,
-        hot: true,
-        historyApiFallback: true
-    },
     performance: {
         hints: isProd ? 'warning' : false,
         maxEntrypointSize: 1024 * 1024,
@@ -65,11 +70,6 @@ const config = {
         ],
         runtimeChunk: true,
     },
-    output: {
-        path: resolve('./public'),
-        publicPath: '/',
-        filename: '[name].[hash].js'
-    },
     resolve: {
         extensions: ['.js', '.jsx', '.json', '.vue'],
         alias: {
@@ -85,34 +85,23 @@ const config = {
                 exclude: /node_modules/
             },
             {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {hotReload: true}
-            },
-            {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {importLoaders: 1, minimize: {modules: true, discardComments: {removeAll: true}}}
-                    },
-                    'postcss-loader',
-                ],
+                    {...cssLoader, options: {...cssLoader.options, importLoaders: 1}},
+                    postcssLoader,
+                ].slice(opt.removeCss ? 1 : 0),
             },
             {
                 test: /\.(sass|scss)$/,
                 exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {minimize: {discardComments: {removeAll: true}}}
-                    },
-                    'postcss-loader',
+                    cssLoader,
+                    postcssLoader,
                     'sass-loader'
-                ],
+                ].slice(opt.removeCss ? 1 : 0),
             },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -127,28 +116,17 @@ const config = {
         ]
     },
     plugins: [
-        // new HardSourceWebpackPlugin(),
-        new MiniCssExtractPlugin({
-            filename: "[name].[hash].css",
-            chunkFilename: "[name].[hash].css"
-        }),
+        new HardSourceWebpackPlugin(),
         new webpack.ProvidePlugin({
             'jQuery': 'jquery',
             '$': 'jquery',
             'Popper': 'popper.js',
         }),
-        new SSRClientPlugin({filename: 'ssr-client-manifest.json'})
+        new MiniCssExtractPlugin({
+            filename: "[name].[hash].css",
+            chunkFilename: "[name].[hash].css"
+        }),
     ]
-}
-
-// if (isProd) {
-//     config.plugins.push(new CompressionPlugin({
-//         asset: "[path].gz[query]",
-//         algorithm: "gzip",
-//         test: /\.js$|\.css$|\.html$/,
-//         threshold: 10240,
-//         minRatio: 0.8
-//     }))
-// }
+})
 
 module.exports = config

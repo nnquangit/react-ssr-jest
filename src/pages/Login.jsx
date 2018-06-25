@@ -1,6 +1,6 @@
 import React from 'react';
 import {NoSSR} from '../components';
-import {connectReact as connect} from "../plugins/exstore"
+import {connectReact as connect} from "exstore"
 
 const Login = connect(store => ({
     store,

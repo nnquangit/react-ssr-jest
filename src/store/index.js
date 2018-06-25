@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStore as makeStore} from '../plugins/exstore'
+import {createStore as makeStore} from 'exstore'
 import modules from './modules';
 
 export function createStore() {
