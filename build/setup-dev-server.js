@@ -16,13 +16,10 @@ const readFile = (output, file) => output.readFileSync(file, 'utf-8')
 
 const serve = (path, cache) => express.static(resolve(path), {maxAge: 0})
 
-app.set('views', path.join(__dirname, './views'));
-app.set('view engine', 'html');
-app.engine('html', ejs.renderFile);
-app.use(favicon('./static/favicon.ico'))
-app.use('/static', serve('./static', true))
-app.use('/', serve('./public', true))
+module.exports = function setupDevServer(app) {
+    
 
+}
 /*
 const clientConfig = require('./build/webpack.client.js');
 clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]

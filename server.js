@@ -81,15 +81,15 @@ app.use(function (req, res, next) {
 });
 */
 
-app.use(function (req, res, next) {
-    app.get('*', (req, res) => {
-        const serverBundle = require('./public/server-react-bundle')
-        const manifest = require('./public/ssr-client-manifest')
-
-        serverBundle.createApp({req, res}).then(data => res.render('index', {...data, manifest}))
-    })
-    next();
-});
+// app.use(function (req, res, next) {
+//     app.get('*', (req, res) => {
+//         const serverBundle = require('./public/server-react-bundle')
+//         const manifest = require('./public/ssr-client-manifest')
+//
+//         serverBundle.createApp({req, res}).then(data => res.render('index', {...data, manifest}))
+//     })
+//     next();
+// });
 
 app.listen(port, function (error) {
     if (error) {
