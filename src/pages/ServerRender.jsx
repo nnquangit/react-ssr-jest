@@ -16,7 +16,7 @@ const ServerRender = connect(({state, getters, actions}) => ({
     componentDidMount() {
         let {fetchData, page, result} = this.props
 
-        if (!result.loaded) {
+        if ((!result.loaded) || (page !== result.info.page)) {
             fetchData(page)
         }
     }

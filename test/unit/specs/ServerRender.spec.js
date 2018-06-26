@@ -10,7 +10,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 Enzyme.configure({adapter: new Adapter()})
 
-describe('Pages:Protected', () => {
+describe('Pages:ServerRender', () => {
     beforeEach(() => {
         const store = createStore()
         const $cookies = createCookies()
