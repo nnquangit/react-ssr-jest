@@ -71,11 +71,8 @@ const config = (opt = {}) => ({
         runtimeChunk: true,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json', '.vue'],
-        alias: {
-            '@': resolve('./src'),
-            'vue$': 'vue/dist/vue.common.js'
-        }
+        extensions: ['.js', '.jsx', '.json'],
+        alias: {'@': resolve('./src')}
     },
     module: {
         rules: [
