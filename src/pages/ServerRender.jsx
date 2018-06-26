@@ -1,15 +1,16 @@
 import React from 'react'
-import {connectReact as connect} from "exstore"
-import {UserList} from "../components"
+import {connectReact as connect} from 'exstore'
+import {UserList} from '../components'
 
 const ServerRender = connect(({state, getters, actions}) => ({
     fetchData: actions.getUsers,
     result: getters.usersList(),
     path: state.router.location.pathname,
-    page: state.router.location.query.page || 1
+    page: parseInt(state.router.location.query.page || 1)
 }))(class extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {page: props.page}
     }
 
     componentDidMount() {
@@ -20,12 +21,14 @@ const ServerRender = connect(({state, getters, actions}) => ({
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    static getDerivedStateFromProps(nextProps, state) {
         let {fetchData} = nextProps
 
-        if (this.props.page !== nextProps.page) {
+        if (nextProps.page !== state.page) {
             fetchData(nextProps.page)
         }
+
+        return {page: nextProps.page}
     }
 
     render() {

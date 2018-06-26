@@ -1,19 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-const Child = (props) => (<div className="loader-wrapper">
+const Child = () => (<div className="loader-wrapper">
     <div className="loader-overlay"></div>
     <div className="loader"></div>
 </div>)
 
 export class Loader extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     componentDidMount() {
-        this.popup = document.createElement("div");
-        document.body.appendChild(this.popup);
+        this.popup = document.createElement('div')
+        document.body.appendChild(this.popup)
         this.renderChild(this.props)
     }
 
@@ -22,12 +22,12 @@ export class Loader extends React.Component {
     }
 
     componentWillUnmount() {
-        ReactDOM.unmountComponentAtNode(this.popup);
-        document.body.removeChild(this.popup);
+        ReactDOM.unmountComponentAtNode(this.popup)
+        document.body.removeChild(this.popup)
     }
 
     renderChild(props) {
-        ReactDOM.render(<Child {...props}/>, this.popup);
+        ReactDOM.render(<Child {...props}/>, this.popup)
     }
 
     render() {

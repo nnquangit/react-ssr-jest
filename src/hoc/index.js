@@ -1,1 +1,1 @@
-export * from "./hocAuth"
+export * from './hocAuth'

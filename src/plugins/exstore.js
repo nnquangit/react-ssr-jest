@@ -1,49 +1,54 @@
-import * as Rx from "rxjs";
-import React from 'react';
+import * as Rx from 'rxjs'
+import React from 'react'
 
-const store = new Rx.Subject();
+const store = new Rx.Subject()
 Object.assign(store, {
-    state: {}, actions: {}, mutations: {}, getters: {},
-    services: {}, plugins: [], middlewares: []
-});
-store.attachModules = attachModules;
-//State
-store.getState = getState;
-store.getStateCapture = getStateCapture;
-store.replaceState = replaceState;
-//Services
-store.getServices = getServices;
-store.attachServices = attachServices;
-//Plugins
-store.attachPlugins = attachPlugins;
-//Middlewares
-store.attachMiddlewares = attachMiddlewares;
-store.applyMiddlewares = applyMiddlewares;
-store.runMiddlewares = runMiddlewares;
+    state: {},
+    actions: {},
+    mutations: {},
+    getters: {},
+    services: {},
+    plugins: [],
+    middlewares: []
+})
+store.attachModules = attachModules
+// State
+store.getState = getState
+store.getStateCapture = getStateCapture
+store.replaceState = replaceState
+// Services
+store.getServices = getServices
+store.attachServices = attachServices
+// Plugins
+store.attachPlugins = attachPlugins
+// Middlewares
+store.attachMiddlewares = attachMiddlewares
+store.applyMiddlewares = applyMiddlewares
+store.runMiddlewares = runMiddlewares
 
 export function getStore() {
     return store
 }
 
 export function getState() {
-    return getStore().state;
+    return getStore().state
 }
 
 export function getStateCapture() {
-    return JSON.parse(JSON.stringify(getStore().state));
+    return JSON.parse(JSON.stringify(getStore().state))
 }
 
 export function replaceState(state) {
-    const _store = getStore();
+    const _store = getStore()
 
     _store.state = {...state}
     _store.next({mutation: 'state:replace', state: _store.getStateCapture()})
 
-    return _store;
+    return _store
 }
 
 export function createStore({modules, services, plugins, middlewares}) {
-    const _store = getStore();
+    const _store = getStore()
 
     if (modules) {
         _store.attachModules(modules)
@@ -61,11 +66,11 @@ export function createStore({modules, services, plugins, middlewares}) {
         _store.attachMiddlewares(middlewares)
     }
 
-    return _store;
+    return _store
 }
 
 export function applyMiddlewares() {
-    const _store = getStore();
+    const _store = getStore()
 
     _store.runMiddlewares(_store.middlewares)
 }
@@ -82,11 +87,10 @@ export function runMiddlewares(middlewares) {
 }
 
 export function attachModules(modules) {
-    const _store = getStore();
+    const _store = getStore()
 
     Object.keys(modules).map((module) => {
-
-        _store.state[module] = {...modules[module].state};
+        _store.state[module] = {...modules[module].state}
 
         if (modules[module].mutations) {
             Object.keys(modules[module].mutations).map(mutation => {
@@ -115,23 +119,23 @@ export function attachModules(modules) {
         }
     })
 
-    return _store;
+    return _store
 }
 
 export function getServices() {
-    return getStore().services;
+    return getStore().services
 }
 
 export function attachServices(services) {
-    const _store = getStore();
+    const _store = getStore()
 
     Object.assign(_store.services, services)
 
-    return _store;
+    return _store
 }
 
 export function attachPlugins(plugins) {
-    const _store = getStore();
+    const _store = getStore()
 
     if (plugins.length) {
         plugins.map(plugin => {
@@ -140,26 +144,26 @@ export function attachPlugins(plugins) {
         })
     }
 
-    return _store;
+    return _store
 }
 
 export function attachMiddlewares(middlewares) {
-    const _store = getStore();
+    const _store = getStore()
 
     if (middlewares.length) {
         _store.middlewares = [...middlewares, ..._store.middlewares]
     }
 
-    return _store;
+    return _store
 }
 
 export function connectReact(mapToProps = {}) {
-    const _store = getStore();
+    const _store = getStore()
 
     return (WrappedComponent) => {
         return class extends React.Component {
             constructor(props) {
-                super(props);
+                super(props)
                 this.state = mapToProps(_store)
                 this.subscribe = _store.subscribe((msg) => this.setState(mapToProps(_store)))
             }
@@ -169,7 +173,7 @@ export function connectReact(mapToProps = {}) {
             }
 
             render() {
-                return <WrappedComponent {...this.props} {...this.state}/>;
+                return <WrappedComponent {...this.props} {...this.state}/>
             }
         }
     }

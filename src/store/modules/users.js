@@ -32,7 +32,7 @@ const mutations = {
 }
 
 const getters = {
-    usersList: (state) => state.list,
+    usersList: (state) => state.list
 }
 
 export default {define, state, actions, mutations, getters}

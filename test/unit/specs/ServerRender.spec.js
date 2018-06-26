@@ -1,15 +1,14 @@
-import React from 'react';
-import {ServerRender} from '@/pages/ServerRender';
-import renderer from 'react-test-renderer';
-import Enzyme, {mount} from 'enzyme';
-import {routerPluginServer} from "@/store/plugins";
-import {createApi} from "@/services/api";
-import {createStore} from "@/store";
-import {createFirebase} from "@/services/firebase";
-import {createCookies} from "@/services/cookies";
-import Adapter from 'enzyme-adapter-react-16';
+import React from 'react'
+import {ServerRender} from '@/pages/ServerRender'
+import renderer from 'react-test-renderer'
+import Enzyme, {mount} from 'enzyme'
+import {createApi} from '@/services/api'
+import {createStore} from '@/store'
+import {createFirebase} from '@/services/firebase'
+import {createCookies} from '@/services/cookies'
+import Adapter from 'enzyme-adapter-react-16'
 
-Enzyme.configure({adapter: new Adapter()});
+Enzyme.configure({adapter: new Adapter()})
 
 describe('Pages:Protected', () => {
     beforeEach(() => {
@@ -20,7 +19,8 @@ describe('Pages:Protected', () => {
 
         store.attachServices({$api, $cookies, $firebase})
         store.replaceState({
-            ...store.getState(), router: {
+            ...store.getState(),
+            router: {
                 location: {
                     hash: '',
                     pathname: '',
@@ -35,13 +35,13 @@ describe('Pages:Protected', () => {
     })
 
     it('react-test-renderer', () => {
-        const component = renderer.create(<ServerRender/>);
-        const state = component.getInstance().state;
+        const component = renderer.create(<ServerRender/>)
+        const state = component.getInstance().state
         expect(state.result.results.length).toBeGreaterThanOrEqual(1)
     })
 
     it('enzyme', () => {
-        const component = mount(<ServerRender/>);
+        const component = mount(<ServerRender/>)
         expect(component.find('.media').length).toBeGreaterThanOrEqual(1)
     })
 })

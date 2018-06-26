@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
 export class NoSSR extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {render: false}
     }
 

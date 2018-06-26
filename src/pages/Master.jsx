@@ -1,10 +1,10 @@
-import React from 'react';
-import {renderRoutes} from "react-router-config";
-import {Link} from "react-router-dom";
+import React from 'react'
+import {renderRoutes} from 'react-router-config'
+import {Link} from 'react-router-dom'
 
 export class Master extends React.Component {
     render() {
-        let {route} = this.props;
+        let {route} = this.props
         return (<div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container">

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
 export class Home extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     render() {

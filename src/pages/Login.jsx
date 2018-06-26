@@ -1,6 +1,6 @@
-import React from 'react';
-import {NoSSR} from '../components';
-import {connectReact as connect} from "exstore"
+import React from 'react'
+import {NoSSR} from '../components'
+import {connectReact as connect} from 'exstore'
 
 const Login = connect(store => ({
     store,
@@ -14,23 +14,23 @@ const Login = connect(store => ({
     }
 
     onLogin() {
-        let {redirect} = this.state;
-        let {history} = this.props;
-        let {signin} = this.props.store.actions;
-        let {$firebase} = this.props.store.services;
-        let provider = new $firebase.auth.GoogleAuthProvider();
+        let {redirect} = this.state
+        let {history} = this.props
+        let {signin} = this.props.store.actions
+        let {$firebase} = this.props.store.services
+        let provider = new $firebase.auth.GoogleAuthProvider()
 
         $firebase.auth().signInWithPopup(provider).then((result) => {
-            let user = result.user;
+            let user = result.user
             user.getIdToken()
                 .then(token => signin({displayName: user.displayName, email: user.email, token}))
                 .then(() => history.push(redirect))
-        }).catch((error) => console.log(error));
+        }).catch((error) => console.log(error))
     }
 
     render() {
-        let {signout} = this.props.store.actions;
-        let {isLoggedIn, currentUser} = this.props.store.getters;
+        let {signout} = this.props.store.actions
+        let {isLoggedIn, currentUser} = this.props.store.getters
 
         return (<div>
             <NoSSR>

@@ -14,7 +14,7 @@ export function routerPluginServer({req}) {
 
 export function routerPluginClient(_history) {
     return (_store) => {
-        let location = _history.location;
+        let location = _history.location
         let newloc = {...location, query: location ? qs.parse(location.search) : {}}
 
         _store.state['router'] = {location: newloc}

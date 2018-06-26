@@ -1,12 +1,12 @@
-import React from 'react';
-import {NoSSR} from '../components';
-import {connectReact as connect} from "exstore"
-import {Redirect} from 'react-router-dom';
+import React from 'react'
+import {NoSSR} from '../components'
+import {connectReact as connect} from 'exstore'
+import {Redirect} from 'react-router-dom'
 
 export const hocAuth = (WrappedComponent) => {
     return connect(({getters}) => ({...getters}))(class extends React.Component {
         constructor(props) {
-            super(props);
+            super(props)
         }
 
         render() {

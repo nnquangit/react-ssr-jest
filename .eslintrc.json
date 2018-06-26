@@ -1,0 +1,34 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 6
+  },
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "standard",
+    "plugin:react/recommended"
+  ],
+  "plugins": [
+    "html",
+    "react"
+  ],
+  "rules": {
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "indent": [
+      2,
+      4
+    ],
+    "no-useless-constructor": "off",
+    "no-useless-escape": "off",
+    "no-return-assign": "off",
+    "prefer-promise-reject-errors": "off",
+    "space-before-function-paren": "off",
+    "keyword-spacing": "off",
+    "camelcase": "off",
+    "generator-star-spacing": "off"
+  }
+}
