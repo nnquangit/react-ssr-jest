@@ -32,7 +32,7 @@ export const Pagination = ({page, total, perpage, onChange}) => {
     }
 
     return (<nav>
-        <ul className="pagination pagination-md justify-content-center">
+        <ul className="pagination pagination-md">
             {itemRender('«', 1, page < 2)}
             {itemRender('‹', Math.max(page - 1, 1), page < 2)}
             {list.map(v => (<li key={v} className={'page-item ' + (v === page ? 'active' : '')}>

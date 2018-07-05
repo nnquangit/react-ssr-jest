@@ -6,6 +6,7 @@ const path = require('path')
 const port = process.env.PORT || 3000
 const app = express()
 const ejs = require('ejs')
+const cookieParser = require('cookie-parser')
 const favicon = require('serve-favicon')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -16,8 +17,9 @@ app.set('views', path.join(__dirname, './views'))
 app.set('view engine', 'html')
 app.engine('html', ejs.renderFile)
 
+app.use(cookieParser())
 app.use(favicon('./static/favicon.ico'))
-app.use('/static', serve('./static', true))
+app.use('/', serve('./static', true))
 app.use('/', serve('./public', true))
 
 let manifest, serverBundle, readyPromise

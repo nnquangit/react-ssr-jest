@@ -5,6 +5,7 @@ import {createBrowserHistory} from 'history'
 import {createStore} from './store'
 import {createApi, createCookies} from './store/services'
 import {logPlugin, persitAuthPlugin, routerPluginClient, ssrPlugin} from './store/plugins'
+import 'bootstrap/dist/js/bootstrap.js'
 import {App} from './App'
 
 const history = createBrowserHistory()
@@ -14,9 +15,9 @@ const $api = createApi(store)
 
 store.attachServices({$api, $cookies})
 store.attachPlugins([
-    routerPluginClient(history),
-    // persitAuthPlugin(),
     ssrPlugin(),
+    routerPluginClient(history),
+    persitAuthPlugin(),
     logPlugin()
 ])
 

@@ -7,7 +7,7 @@ export function persitAuthPlugin(params) {
             _store.replaceState({..._store.getState(), auth: JSON.parse(saved)})
         }
 
-        if (process.env.VUE_ENV === 'client') {
+        if (process.env.REACT_ENV === 'client') {
             _store.subscribe((msg) => $cookies.setItem('__auth', JSON.stringify(_store.getState().auth)))
         }
     }

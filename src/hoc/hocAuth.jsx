@@ -4,7 +4,7 @@ import {connectReact as connect} from 'exstore'
 import {Redirect} from 'react-router-dom'
 
 export const hocAuth = (WrappedComponent) => {
-    return connect(({getters}) => ({...getters}))(class extends React.Component {
+    return connect(({getters}) => ({isLoggedIn: getters.isLoggedIn()}))(class extends React.Component {
         constructor(props) {
             super(props)
         }
@@ -13,8 +13,8 @@ export const hocAuth = (WrappedComponent) => {
             let {isLoggedIn, location} = this.props
 
             return (<NoSSR>
-                {isLoggedIn() && (<WrappedComponent {...this.props}/>)}
-                {!isLoggedIn() && (<Redirect to={{pathname: '/login', state: {referrer: location}}}/>)}
+                {isLoggedIn && (<WrappedComponent {...this.props}/>)}
+                {!isLoggedIn && (<Redirect to={{pathname: '/login', state: {referrer: location}}}/>)}
             </NoSSR>)
         }
     })

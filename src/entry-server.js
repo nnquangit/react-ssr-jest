@@ -16,7 +16,7 @@ export function createApp({req, res}) {
     store.attachServices({$api, $cookies})
     store.attachPlugins([
         routerPluginServer({req, res}),
-        // persitAuthPlugin()
+        persitAuthPlugin()
     ])
 
     const routes = createRouter()

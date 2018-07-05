@@ -1,5 +1,5 @@
 import React from 'react'
-import {connectReact as connect} from "exstore";
+import {connectReact as connect} from 'exstore'
 
 const Home = connect(({getters}) => ({
     current: getters.currentCounter()

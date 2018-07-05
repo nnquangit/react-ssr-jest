@@ -12,7 +12,6 @@ const postcssLoader = {
     loader: 'postcss-loader',
     options: {
         plugins: [
-            require('postcss-import'),
             require('autoprefixer')({
                 browsers: [
                     'ie >= 10', 'ie_mob >= 10', 'ff >= 30',
@@ -22,10 +21,6 @@ const postcssLoader = {
             }),
         ]
     }
-}
-const cssLoader = {
-    loader: 'css-loader',
-    options: {minimize: {modules: true, discardComments: {removeAll: true}}}
 }
 
 const config = (opt = {}) => ({
@@ -92,8 +87,9 @@ const config = (opt = {}) => ({
                 exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {...cssLoader, options: {...cssLoader.options, importLoaders: 1}},
+                    cssLoader,
                     postcssLoader,
+                    'sass-loader'
                 ].slice(opt.removeCss ? 1 : 0),
             },
             {

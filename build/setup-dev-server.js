@@ -44,14 +44,13 @@ module.exports = function setupDevServer(app, done) {
     let reactResolver, reactPromise = new Promise((resolve, reject) => reactResolver = resolve)
     const reactCompiler = webpack(reactConfig);
     reactCompiler.outputFileSystem = new MFS()
-    app.use(require('webpack-dev-middleware')(reactCompiler, {
-        publicPath: reactConfig.output.publicPath,
-        stats: false,
-        watchOptions: {aggregateTimeout: 300, poll: 1000},
-        logLevel: 'silent'
-    }));
-    reactCompiler.hooks.done.tap("React server compiler", function (compilation, callback) {
-        let {filename, path: outputPath} = compilation.compilation.options.output;
+    reactCompiler.watch({}, (err, stats) => {
+        if (err) throw err
+        stats = stats.toJson()
+        stats.errors.forEach(err => console.error(err))
+        stats.warnings.forEach(err => console.warn(err))
+
+        let {filename, path: outputPath} = reactConfig.output;
         let context = readFile(reactCompiler.outputFileSystem, path.join(outputPath, filename));
         serverBundle = eval(context);
         if (manifest) {
@@ -59,9 +58,7 @@ module.exports = function setupDevServer(app, done) {
         }
         console.log(">>>>>>>>>>> Server compiled done")
         reactResolver();
-        return callback;
-    });
-    reactCompiler.watch({}, (err, stats) => console.log("Webpack server watching..."))
+    })
 
     return Promise.all([clientPromise, reactPromise])
 }

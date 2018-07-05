@@ -4,32 +4,25 @@ import {connectReact as connect} from 'exstore'
 
 const Login = connect(({getters}) => ({
     currentUser: getters.currentUser(),
-    isLoggedIn: getters.isLoggedIn(),
+    isLoggedIn: getters.isLoggedIn()
 }), ({actions}) => ({
     signin: actions.signin,
     signout: actions.signout
 }))(class extends React.Component {
     constructor(props) {
         super(props)
-        // let rState = props.location.state
-        // this.state = {redirect: (rState && rState.referrer) ? rState.referrer.pathname : '/'}
-        this.state = {fullname: ''}
+        let rState = props.location.state
+        this.redirect = (rState && rState.referrer) ? rState.referrer.pathname : '/'
+        this.state = {fullname: '', token: 'Bearer sample 123456'}
         this.onSubmit = this.onSubmit.bind(this)
     }
 
-    onSubmit() {
-        // let {redirect} = this.state
-        // let {history} = this.props
-        // let {signin} = this.props.store.actions
-        // let {$firebase} = this.props.store.services
-        // let provider = new $firebase.auth.GoogleAuthProvider()
-        //
-        // $firebase.auth().signInWithPopup(provider).then((result) => {
-        //     let user = result.user
-        //     user.getIdToken()
-        //         .then(token => signin({displayName: user.displayName, email: user.email, token}))
-        //         .then(() => history.push(redirect))
-        // }).catch((error) => console.log(error))
+    onSubmit(e) {
+        e.preventDefault()
+        let {history, signin} = this.props
+
+        signin(this.state)
+        history.push(this.redirect)
     }
 
     render() {
@@ -45,7 +38,7 @@ const Login = connect(({getters}) => ({
                 <div className="form-group">
                     <label htmlFor="txtFullname">Fullname</label>
                     <input type="text" className="form-control" id="txtFullname" value={fullname}
-                           onChange={(e) => this.setState({fullname: e.target.value})}/>
+                        onChange={(e) => this.setState({fullname: e.target.value})}/>
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>)}
