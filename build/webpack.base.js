@@ -71,12 +71,12 @@ const config = (opt = {}) => ({
     },
     module: {
         rules: [
-            // {
-            //     enforce: "pre",
-            //     test: /\.(js|jsx)$/,
-            //     exclude: /node_modules/,
-            //     loader: "eslint-loader",
-            // },
+            {
+                enforce: "pre",
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader",
+            },
             {
                 test: /\.(js|jsx)$/,
                 loader: 'babel-loader',
@@ -87,7 +87,7 @@ const config = (opt = {}) => ({
                 exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    cssLoader,
+                    'css-loader',
                     postcssLoader,
                     'sass-loader'
                 ].slice(opt.removeCss ? 1 : 0),
@@ -97,7 +97,7 @@ const config = (opt = {}) => ({
                 exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    cssLoader,
+                    'css-loader',
                     postcssLoader,
                     'sass-loader'
                 ].slice(opt.removeCss ? 1 : 0),

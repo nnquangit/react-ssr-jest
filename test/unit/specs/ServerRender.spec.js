@@ -2,10 +2,8 @@ import React from 'react'
 import {ServerRender} from '@/pages/ServerRender'
 import renderer from 'react-test-renderer'
 import Enzyme, {mount} from 'enzyme'
-import {createApi} from '@/services/api'
 import {createStore} from '@/store'
-import {createFirebase} from '@/services/firebase'
-import {createCookies} from '@/services/cookies'
+import {createApi} from '@/store/services'
 import Adapter from 'enzyme-adapter-react-16'
 
 Enzyme.configure({adapter: new Adapter()})
@@ -13,11 +11,9 @@ Enzyme.configure({adapter: new Adapter()})
 describe('Pages:ServerRender', () => {
     beforeEach(() => {
         const store = createStore()
-        const $cookies = createCookies()
-        const $api = createApi(store)
-        const $firebase = createFirebase()
+        const $api = createApi()
 
-        store.attachServices({$api, $cookies, $firebase})
+        store.attachServices({$api})
         store.replaceState({
             ...store.getState(),
             router: {
@@ -36,7 +32,7 @@ describe('Pages:ServerRender', () => {
 
     it('react-test-renderer', () => {
         const component = renderer.create(<ServerRender/>)
-        const state = component.getInstance().state
+        const state = component.getInstance().state.state
         expect(state.result.results.length).toBeGreaterThanOrEqual(1)
     })
 

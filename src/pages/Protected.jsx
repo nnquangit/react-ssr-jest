@@ -3,11 +3,11 @@ import {NoSSR} from '../components'
 import {connectReact as connect} from 'exstore'
 import {hocAuth} from '../hoc'
 
-const Protected = connect(({getters}) => ({
+const Protected = hocAuth(connect(({getters}) => ({
     currentUser: getters.currentUser()
 }), ({actions}) => ({
     signout: actions.signout
-}))(hocAuth(class extends React.Component {
+}))(class extends React.Component {
     constructor(props) {
         super(props)
     }
