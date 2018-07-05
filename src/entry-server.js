@@ -3,10 +3,8 @@ import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 import {matchRoutes} from 'react-router-config'
 import {createStore} from './store'
-import {routerPluginServer} from './store/plugins'
-import {createApi} from './services/api'
-import {createCookies} from './services/cookies'
-import {createFirebase} from './services/firebase'
+import {persitAuthPlugin, routerPluginServer} from './store/plugins'
+import {createApi, createCookies} from './store/services'
 import {createRouter} from './router'
 import {App} from './App'
 
@@ -14,11 +12,11 @@ export function createApp({req, res}) {
     const store = createStore()
     const $cookies = createCookies({req, res})
     const $api = createApi(store)
-    const $firebase = createFirebase()
 
-    store.attachServices({$api, $cookies, $firebase})
+    store.attachServices({$api, $cookies})
     store.attachPlugins([
-        routerPluginServer({req, res})
+        routerPluginServer({req, res}),
+        // persitAuthPlugin()
     ])
 
     const routes = createRouter()

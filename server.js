@@ -3,7 +3,7 @@ process.traceDeprecation = process.env.NODE_ENV === 'production'
 
 const express = require('express')
 const path = require('path')
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 3000
 const app = express()
 const ejs = require('ejs')
 const favicon = require('serve-favicon')

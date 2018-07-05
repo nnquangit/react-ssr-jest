@@ -1,21 +1,27 @@
 import React from 'react'
+import {connectReact as connect} from "exstore";
 
-export class Home extends React.Component {
+const Home = connect(({getters}) => ({
+    current: getters.currentCounter()
+}), ({actions}) => ({
+    addCounter: actions.addCounter
+}))(class extends React.Component {
     constructor(props) {
         super(props)
     }
 
     render() {
-        return (<div className="jumbotron">
-            <h1 className="display-4">Hello, world!</h1>
-            <p className="lead">
-                This is a simple hero unit, a simple jumbotron-style component for calling extra
-                attention to featured content or information.
-            </p>
-            <hr className="my-4"/>
-            <p>It uses utility classes for typography and spacing to space content out within the larger
-                container.</p>
-            <a className="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        let {current, addCounter} = this.props
+        return (<div>
+            <button type="button" className="btn btn-primary" onClick={addCounter}>
+                Counter <span className="badge badge-light">{current}</span>
+            </button>
+            <br/> <br/>
+            <div className="jumbotron">
+                <h1 className="display-4">Hello, world!</h1>
+            </div>
         </div>)
     }
-}
+})
+
+export {Home}

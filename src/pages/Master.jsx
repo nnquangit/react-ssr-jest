@@ -11,7 +11,6 @@ export class Master extends React.Component {
                     <Link className="navbar-brand" to="/">Brand</Link>
                     <div className="mr-auto">
                         <div className="navbar-nav">
-                            <Link className="nav-item nav-link" to="/">Home</Link>
                             <Link className="nav-item nav-link" to="/login">Login</Link>
                             <Link className="nav-item nav-link" to="/protected">Protected</Link>
                             <Link className="nav-item nav-link" to="/serverrender">ServerRender</Link>

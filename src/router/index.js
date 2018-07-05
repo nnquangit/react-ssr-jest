@@ -1,4 +1,5 @@
 import {Home, Login, Master, Protected, ServerRender} from '../pages'
+import {hocAuth} from '../hoc'
 
 export function createRouter() {
     return [
