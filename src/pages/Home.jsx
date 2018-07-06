@@ -18,7 +18,7 @@ const Home = connect(({getters}) => ({
             </button>
             <br/> <br/>
             <div className="jumbotron">
-                <h1 className="display-4">Hello, world!!</h1>
+                <h1 className="display-4">Hello, world!</h1>
             </div>
         </div>)
     }

@@ -29,14 +29,10 @@ export function createApp({req, res}) {
 
     return new Promise((resolve, reject) => {
         Promise.all(promises).then(() => {
-            const html = ReactDOMServer.renderToString(
-                <StaticRouter location={req.url} context={{}}>
-                    <App/>
-                </StaticRouter>
-            )
-            const state = JSON.stringify(store.getStateCapture())
-
-            resolve({html, state})
+            let html = ReactDOMServer.renderToString(<StaticRouter location={req.url} context={{}}>
+                <App/>
+            </StaticRouter>)
+            resolve({html, state: store.getStateCapture()})
         })
     })
 }

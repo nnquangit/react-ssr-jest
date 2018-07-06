@@ -108,7 +108,7 @@ const config = (opt = {}) => ({
         ]
     },
     plugins: [
-        // new HardSourceWebpackPlugin(),
+        new HardSourceWebpackPlugin(),
         new webpack.ProvidePlugin({
             'jQuery': 'jquery',
             '$': 'jquery',
