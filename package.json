@@ -9,7 +9,7 @@
     "unit": "jest",
     "lint": "eslint --ext .js,.jsx src test/unit/specs",
     "lint:fix": "eslint --ext .js,.jsx src test/unit/specs --fix ",
-    "build": "npm-run-all clean build:*",
+    "build": "npm-run-all build:*",
     "build:client": "cross-env NODE_ENV=production webpack --config ./build/webpack.client.js --progress --hide-modules",
     "build:server": "cross-env NODE_ENV=production webpack --config ./build/webpack.server.js --progress --hide-modules",
     "clean": "rimraf public/*"
@@ -57,6 +57,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "cache-loader": "^1.2.2",
     "compression-webpack-plugin": "^1.1.11",
     "cross-env": "^5.1.6",
     "css-loader": "^0.28.11",

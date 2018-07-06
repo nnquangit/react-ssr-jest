@@ -24,7 +24,7 @@ app.use('/', serve('./public', true))
 
 let manifest, serverBundle, readyPromise
 if (isProd) {
-    serverBundle = require('./public/server-react-bundle')
+    serverBundle = require('./public/server-bundle')
     manifest = require('./public/ssr-client-manifest')
 } else {
     readyPromise = require('./build/setup-dev-server')(app, (opt) => {

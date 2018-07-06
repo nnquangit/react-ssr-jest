@@ -14,7 +14,7 @@ const config = merge(base({removeCss: true}), {
     entry: resolve('../src/entry-server.js'),
     output: {
         path: resolve('../public'),
-        filename: 'server-react-bundle.js',
+        filename: 'server-bundle.js',
         libraryTarget: 'commonjs2'
     },
     optimization: {

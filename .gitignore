@@ -7,6 +7,7 @@
 /.env.js
 
 .DS_Store
+.cache-loader
 
 node_modules
 

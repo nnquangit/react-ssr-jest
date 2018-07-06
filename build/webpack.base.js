@@ -1,8 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const {SSRClientPlugin} = require('ssr-plugin')
 
@@ -79,24 +79,17 @@ const config = (opt = {}) => ({
             },
             {
                 test: /\.(js|jsx)$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    postcssLoader,
-                    'sass-loader'
-                ].slice(opt.removeCss ? 1 : 0),
+                    'cache-loader',
+                    'babel-loader?cacheDirectory'
+                ]
             },
             {
-                test: /\.(sass|scss)$/,
-                exclude: /node_modules/,
+                test: /\.(css|sass|scss)$/,
                 use: [
                     MiniCssExtractPlugin.loader,
+                    'cache-loader',
                     'css-loader',
                     postcssLoader,
                     'sass-loader'
@@ -115,7 +108,7 @@ const config = (opt = {}) => ({
         ]
     },
     plugins: [
-        new HardSourceWebpackPlugin(),
+        // new HardSourceWebpackPlugin(),
         new webpack.ProvidePlugin({
             'jQuery': 'jquery',
             '$': 'jquery',
