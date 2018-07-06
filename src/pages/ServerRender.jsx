@@ -2,11 +2,12 @@ import React from 'react'
 import {connectReact as connect} from 'exstore'
 import {UserList} from '../components'
 
-const ServerRender = connect(({state, getters, actions}) => ({
-    fetchData: actions.getUsers,
+const ServerRender = connect(({state, getters}) => ({
     result: getters.usersList(),
     path: state.router.location.pathname,
     page: parseInt(state.router.location.query.page || 1)
+}), ({actions}) => ({
+    fetchData: actions.getUsers
 }))(class extends React.Component {
     constructor(props) {
         super(props)
