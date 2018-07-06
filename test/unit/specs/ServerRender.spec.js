@@ -32,8 +32,7 @@ describe('Pages:ServerRender', () => {
 
     it('react-test-renderer', () => {
         const component = renderer.create(<ServerRender/>)
-        const state = component.getInstance().state.state
-        console.log(component.getInstance().state)
+        const state = component.getInstance().state.state || component.getInstance().state
         expect(state.result.results.length).toBeGreaterThanOrEqual(1)
     })
 
